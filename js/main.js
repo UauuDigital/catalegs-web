@@ -156,6 +156,7 @@
 
   window.addEventListener('popstate', e => {
     if (!e.state) return;
+    Object.keys(sel).forEach(k => delete sel[k]);
     Object.assign(sel, e.state.sel);
     navigate(e.state.page, { push: false });
   });
