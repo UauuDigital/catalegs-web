@@ -152,11 +152,19 @@
   let curPage = 0;
   const sel   = {};   // { language, year, … }
 
+  history.replaceState({ page: 0, sel: {} }, '');
+
+  window.addEventListener('popstate', e => {
+    if (!e.state) return;
+    Object.assign(sel, e.state.sel);
+    navigate(e.state.page, { push: false });
+  });
+
   const header  = document.getElementById('siteHeader');
   const overlay = document.getElementById('menuOverlay');
   const navList = document.getElementById('overlayNav');
 
-  function navigate(to) {
+  function navigate(to, { push = true } = {}) {
     if (to === curPage) return;
     const fwd   = to > curPage;
     const fromEl = document.getElementById(PAGES[curPage].id);
@@ -179,6 +187,7 @@
     if (to === 3) requestAnimationFrame(initPage3);
     if (to === 4) requestAnimationFrame(initPage4);
     if (to === 5) requestAnimationFrame(initPage5);
+    if (push) history.pushState({ page: to, sel: { ...sel } }, '');
   }
 
   function rebuildNav() {
