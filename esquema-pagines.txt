@@ -1,0 +1,137 @@
+UAUU — CATÀLEG WEB · ESQUEMA DE PÀGINES
+========================================
+Fitxer principal: index.html
+Última actualització: 2026-05-22
+
+
+────────────────────────────────────────
+P0 — IDIOMA
+────────────────────────────────────────
+Funció     : Selecció d'idioma inicial
+Fons       : #221F1E (fosc)
+Interacció : Wheel selector amb snap suau (150ms)
+Opcions    : Català (per defecte) · Español · English
+Efectes    : Blur + opacitat + mida interpolats per distància al centre
+Desa a     : sel.language
+
+
+────────────────────────────────────────
+P1 — ANY
+────────────────────────────────────────
+Funció     : Selecció de l'any de la celebració
+Fons       : #221F1E (fosc)
+Interacció : Wheel selector (mateixa mecànica que P0)
+Opcions    : 2026 · 2027 (per defecte) · 2028
+Desa a     : sel.year
+
+
+────────────────────────────────────────
+P2 — VISIÓ GENERAL (4 escenaris)
+────────────────────────────────────────
+Funció     : Presentació dels sis àmbits del servei
+Fons       : Vídeo blur  →  media/Portada web oficial BLUR.m4v
+Header     : mode fosc (logo blanc)
+CTA        : Pill "Descobreix els espais" — sempre visible
+
+  DESKTOP
+  - H1 + H2 en Ogg blanc
+  - Arc semicircular amb 6 ítems (01–06), scroll vertical
+  - Blur de profunditat de camp interpolat (0 → 2 → 4.5 → 7 px)
+  - Animació hint en arribar: arc puja a ítem 2 i torna (2.2s, cancel·lable)
+
+  MÒBIL  (.p2-mobile)
+  - Intro: H1 + H2 posicionat absolut a 18vh
+  - Carousel de slides amb swipe real (seguiment del dit)
+  - Rubber band als extrems · Snap a 36px · Dots de navegació
+  - pointer-events: contenidor none, botó i dots auto explícit
+
+Contingut  : Espai · Coordinació · Cerimònia · Decoració · Gastronomia · Festa
+
+
+────────────────────────────────────────
+P3 — SELECTOR DE FINQUES
+────────────────────────────────────────
+Funció     : Tria de la finca on se celebrarà l'esdeveniment
+Fons       : #F2EFEE (crema)
+Header     : mode clar (is-light) — text fosc, logo invertit
+
+  DESKTOP
+  - Llista de finques en Ogg gran (hover opaca les altres)
+  - Centre: foto de la finca
+  - Dreta: info (Essència · Capacitat · Ubicació)
+
+  MÒBIL  (#p3-mob-cards)
+  - Targetes verticals full-bleed
+  - Nom + aforament alineats a la dreta-baix
+  - Clic navega directament a P4
+
+Finques    : Can Macià · Ca n'Alzina · Castell de Tous · Mas Vivencs
+Desa a     : sel.venueIdx  →  navega a P4
+
+
+────────────────────────────────────────
+P4 — DETALL DE FINCA
+────────────────────────────────────────
+Funció     : Llista d'ítems disponibles a la finca seleccionada
+Fons       : #221F1E (fosc)
+Header     : mode is-venue — oculta logo UAUU, mostra nom finca
+             (Ogg 28px desktop / 18px mòbil)
+
+Ítems      : Llista en Ogg clamp(20px→42px) blanc
+             Hover via getBoundingClientRect + TOL 6px (evita flickering)
+Ítem especial "reserva" → obre simplybook en nova pestanya
+Traduccions: ITEM_LABELS (CA / ES / EN)
+Desa a     : sel.itemIdx  →  navega a P5
+
+
+────────────────────────────────────────
+P5 — DETALL D'ÍTEM
+────────────────────────────────────────
+Funció     : Informació completa de l'ítem seleccionat
+Fons       : #221F1E (fosc)
+
+  DESKTOP — Layout 3 columnes
+  - Esquerra : llista d'ítems (navegació lateral)
+  - Centre   : imatge / mapa / galeria (segons tipus)
+  - Dreta    : informació, features, preus
+
+  MÒBIL  (#p6-mob-nav)
+  - Pills horitzontals desplaçables per navegar entre ítems
+  - Imatge 42vh · Panell dret scrollable
+
+Avís 2028  : year-notice visible si any = 2028 (desplaça layout 32px)
+
+Tipus d'ítem i comportament del centre:
+  standard  → Carousel d'imatges + features + preu (+IVA)
+  preus     → Taula filtrable per dia
+  galeria   → Grid 3 columnes + lightbox + navegació teclat
+  mapa      → iFrame + botó Google Maps
+  reserva   → Link directe a simplybook
+
+Traduccions: ITEM_LABELS · ITEM_TITLES · PREUS_UI · MAPS_BTN
+             FEAT_TRANS (31 features) · NOTE_TRANS · PREUSDATE_TRANS
+             PREUSNOTE_TRANS · P4_CONTENT · P3_CONTENT
+
+
+────────────────────────────────────────
+HEADER GLOBAL
+────────────────────────────────────────
+- Logo UAUU       → navega a P0 (inici)
+- Logo finca (is-venue) → navega a P3 (selector finques)
+- Menú overlay    → breadcrumb: Inici / Any / Visió / Espais / Finca
+- nav-on actiu    : des de P1 en endavant
+- .book-link "Reservar visita presencial" : ocult en mòbil
+
+
+────────────────────────────────────────
+DADES I NOTES IMPORTANTS
+────────────────────────────────────────
+Breakpoint mòbil  : 1024px  (isMobile = () => window.innerWidth < 1024)
+Fonts             : Ogg Medium 500 · Inter Variable (100–900)
+Paleta            : #FFFFFF · #221F1E · #F2EFEE
+Animacions        : Spring RAF (SPRING = 0.14) per a totes les transicions de scroll
+Blur profunditat  : filter:blur(Xpx) interpolat frame a frame
+2028 fallback     : getVenueItems() → years['2028'] || years['2027'] || years['2026']
+
+Cerimònia religiosa → ÚNICAMENT Can Macià (2026 i 2027)
+Traduccions ES/EN del contingut dels ítems → pendent verificació client
