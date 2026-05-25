@@ -36,7 +36,9 @@
       display: flex; align-items: center;
       justify-content: space-between;
       padding: 0 44px;
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
     }
+    .site-header.hdr-hidden { transform: translateY(-100%); }
 
     /* Logo always visible, centred */
     .hdr-logo {
@@ -136,6 +138,7 @@
     .page.is-below  { opacity: 0;  transform: translateY(52px);  pointer-events: none; }
 
     .mob-sel-wrap { display: none; }
+    .mob-cards-wrap { display: none; }
 
     /* ── WHEEL ── */
     .wheel-track {
@@ -781,14 +784,15 @@
       /* ── P3 venue selector → cards ── */
       .p4-layout { display: none; }
       .p3-mob-cards {
-        display: flex; flex-direction: column;
+        display: flex; flex-direction: column; gap: 10px;
         position: absolute; inset: 0; overflow-y: auto;
-        padding-top: 60px;
+        padding: 70px 14px 24px;
       }
       .p3-mob-card {
         position: relative; flex-shrink: 0;
         height: 38vh; min-height: 180px;
         overflow: hidden; cursor: pointer;
+        border-radius: 18px;
       }
       .p3-mob-card img {
         width: 100%; height: 100%; object-fit: cover; display: block;
@@ -811,10 +815,101 @@
         color: rgba(255,255,255,0.6); letter-spacing: 0.04em; margin-top: 4px;
       }
 
-      /* ── P4 venue items ── */
-      .p5-layout { justify-content: center; }
-      .p5-left { padding: 0 8%; }
-      .p5-item { font-size: clamp(22px, 5.5vw, 38px); }
+      /* ── P4 venue items → mobile cards ── */
+      .p5-layout { display: none; }
+      #page-4 { align-items: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      #page-5 { display: none !important; }
+
+      .mob-cards-wrap {
+        display: flex; flex-direction: column; gap: 12px;
+        width: 100%; padding: 76px 14px 40px;
+      }
+      .mob-card {
+        border-radius: 18px; overflow: hidden;
+        background: #F2EFEE;
+      }
+      .mob-card-img {
+        width: 100%; aspect-ratio: 4/3;
+        position: relative; overflow: hidden;
+      }
+      .mob-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .mob-card-body { padding: 18px 20px 22px; }
+      .mob-card-title {
+        font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600;
+        letter-spacing: -0.02em; color: #221F1E; margin-bottom: 12px; line-height: 1.15;
+      }
+      .mob-card-features {
+        list-style: none; font-family: 'Inter', sans-serif; font-size: 13px;
+        font-weight: 300; color: rgba(34,31,30,0.65); line-height: 1.65;
+      }
+      .mob-card-note {
+        font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+        color: rgba(34,31,30,0.35); margin-top: 10px;
+      }
+      .mob-card-price {
+        font-family: 'Ogg', Georgia, serif; font-size: clamp(28px, 7vw, 38px);
+        letter-spacing: -0.02em; color: #221F1E; text-align: right; margin-top: 14px;
+      }
+      .mob-card-price-iva {
+        font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+        color: rgba(34,31,30,0.4); margin-left: 4px; vertical-align: middle;
+      }
+      .mob-card .p6-preus-link-btn { display: none; }
+      /* Carousel mòbil */
+      .mob-car-track { position: absolute; inset: 0; }
+      .mob-car-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.38s ease; }
+      .mob-car-slide.is-active { opacity: 1; }
+      .mob-car-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .mob-car-btn {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+        background: rgba(255,255,255,0.88); color: #221F1E;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+      }
+      .mob-car-prev { left: 10px; }
+      .mob-car-next { right: 10px; }
+      .mob-car-dots {
+        position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 5px;
+      }
+      .mob-car-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        background: rgba(255,255,255,0.5); cursor: pointer; transition: background 0.2s;
+      }
+      .mob-car-dot.is-active { background: #fff; }
+      /* Preus card */
+      .mob-card-preus-wrap { padding: 20px 20px 24px; }
+      .mob-card-preus-title {
+        font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600;
+        letter-spacing: -0.02em; color: #221F1E; margin-bottom: 14px;
+      }
+      .mob-card.is-preus { background: #F2EFEE; }
+      .mob-card.is-preus .p6-preus-filter { margin-bottom: 14px; }
+      .mob-card.is-preus .p6-preus-pill { font-size: 9px; padding: 4px 11px; }
+      .mob-card.is-preus .p6-preus-table td { font-size: 11px; padding: 8px 0; }
+      .mob-card.is-preus .p6-preus-footnote { font-size: 10px; margin-top: 10px; color: rgba(34,31,30,0.45); font-family: 'Inter', sans-serif; font-weight: 300; }
+      /* Mapa card */
+      .mob-card-mapa { padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+      .mob-card-map-frame { width: 100%; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; }
+      .mob-card-map-frame iframe { width: 100%; height: 100%; border: none; display: block; }
+      .mob-card-mapa .p6-maps-btn { color: #221F1E; border-color: rgba(34,31,30,0.28); }
+      .mob-card-mapa .p6-maps-btn:hover { border-color: rgba(34,31,30,0.7); background: rgba(34,31,30,0.04); }
+      .mob-card-mapa .p6-maps-btn-arrow { background: #221F1E; }
+      /* Galeria card */
+      .mob-card-gallery {
+        display: flex; overflow-x: auto; gap: 3px;
+        scrollbar-width: none; padding: 3px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .mob-card-gallery::-webkit-scrollbar { display: none; }
+      .mob-card-gallery-item {
+        flex-shrink: 0; width: 55vw; aspect-ratio: 1;
+        overflow: hidden; cursor: pointer; border-radius: 12px;
+      }
+      .mob-card-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      /* Reserva card */
+      .mob-card-reserva { background: transparent; }
 
       /* ── P5 item detail → bottom drawer ── */
       .p6-layout {

@@ -165,7 +165,19 @@
   const overlay = document.getElementById('menuOverlay');
   const navList = document.getElementById('overlayNav');
 
+  function attachScrollHide(scrollEl) {
+    const hdr = document.querySelector('.site-header');
+    let lastY = 0;
+    scrollEl.onscroll = () => {
+      const y = scrollEl.scrollTop;
+      if (y > lastY && y > 40) hdr.classList.add('hdr-hidden');
+      else hdr.classList.remove('hdr-hidden');
+      lastY = y;
+    };
+  }
+
   function navigate(to, { push = true } = {}) {
+    document.querySelector('.site-header').classList.remove('hdr-hidden');
     if (to === curPage) return;
     const fwd   = to > curPage;
     const fromEl = document.getElementById(PAGES[curPage].id);
@@ -724,6 +736,7 @@
       const item = e.target.closest('.p4-item');
       if (!item) return;
       sel.venueIdx = parseInt(item.dataset.idx);
+      sel.itemIdx = 0;
       navigate(4);
     });
 
@@ -779,9 +792,10 @@
       overlay.appendChild(capEl);
       card.appendChild(cardImg);
       card.appendChild(overlay);
-      card.onclick = () => { sel.venueIdx = i; navigate(4); };
+      card.onclick = () => { sel.venueIdx = i; sel.itemIdx = 0; navigate(4); };
       mobCards.appendChild(card);
     });
+    attachScrollHide(document.getElementById('p3-mob-cards'));
   }
   /* ═══════════════════════════════════════════════════════
      VENUE DATA
@@ -1474,6 +1488,8 @@
   }
 
   function initPage4() {
+    document.getElementById('page-4').scrollTop = 0;
+    attachScrollHide(document.getElementById('page-4'));
     const lang     = sel.language || 'Català';
     const venueIdx = sel.venueIdx ?? 0;
     document.getElementById('hdr-venue-name').innerHTML = VENUE_TITLES[venueIdx];
@@ -1495,6 +1511,234 @@
       p5Year.textContent = sel.year || '2027';
     }
     p5List.insertBefore(p5Year, p5List.firstChild);
+    buildMobCards();
+  }
+
+  function makeMobCarousel(container, imgs) {
+    if (imgs.length <= 1) {
+      const img = document.createElement('img');
+      img.src = imgs[0]; img.alt = ''; img.loading = 'lazy';
+      container.appendChild(img);
+      return;
+    }
+    let cur = 0;
+    const track = document.createElement('div');
+    track.className = 'mob-car-track';
+    imgs.forEach((src, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'mob-car-slide' + (i === 0 ? ' is-active' : '');
+      const img = document.createElement('img');
+      img.src = src; img.alt = ''; img.loading = i === 0 ? 'eager' : 'lazy';
+      slide.appendChild(img);
+      track.appendChild(slide);
+    });
+    const dotsEl = document.createElement('div');
+    dotsEl.className = 'mob-car-dots';
+    imgs.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'mob-car-dot' + (i === 0 ? ' is-active' : '');
+      dot.onclick = () => goTo(i);
+      dotsEl.appendChild(dot);
+    });
+    function goTo(idx) {
+      const slides = track.querySelectorAll('.mob-car-slide');
+      const dots   = dotsEl.querySelectorAll('.mob-car-dot');
+      slides[cur].classList.remove('is-active');
+      dots[cur].classList.remove('is-active');
+      cur = (idx + imgs.length) % imgs.length;
+      slides[cur].classList.add('is-active');
+      dots[cur].classList.add('is-active');
+    }
+    const prev = document.createElement('button');
+    prev.className = 'mob-car-btn mob-car-prev';
+    prev.innerHTML = `<svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1L1 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    prev.onclick = () => goTo(cur - 1);
+    const next = document.createElement('button');
+    next.className = 'mob-car-btn mob-car-next';
+    next.innerHTML = `<svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    next.onclick = () => goTo(cur + 1);
+    let startX = 0;
+    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+    }, { passive: true });
+    container.appendChild(track);
+    container.appendChild(prev);
+    container.appendChild(next);
+    container.appendChild(dotsEl);
+  }
+
+  function buildMobCards() {
+    const lang  = sel.language || 'Català';
+    const items = getVenueItems();
+    const vd    = VENUE_DATA[sel.venueIdx ?? 0];
+    const wrap  = document.getElementById('mob-cards-wrap');
+    wrap.innerHTML = '';
+
+    // Year label
+    const yearEl = document.createElement('div');
+    yearEl.className = 'p5-list-year';
+    if (sel.year === '2028') {
+      yearEl.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
+    } else {
+      yearEl.textContent = sel.year || '2027';
+    }
+    wrap.appendChild(yearEl);
+
+    const tFeat = FEAT_TRANS[lang] || {};
+    const tNote = NOTE_TRANS[lang] || {};
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'mob-card';
+      card.id = `mob-card-${item.key}`;
+
+      if (item.type === 'galeria') {
+        if (!item.images || item.images.length === 0) return;
+        const strip = document.createElement('div');
+        strip.className = 'mob-card-gallery';
+        item.images.forEach((src, i) => {
+          const cell = document.createElement('div');
+          cell.className = 'mob-card-gallery-item';
+          const img = document.createElement('img');
+          img.src = src; img.alt = ''; img.loading = 'lazy';
+          cell.appendChild(img);
+          cell.onclick = () => openLightbox(item.images, i);
+          strip.appendChild(cell);
+        });
+        card.appendChild(strip);
+        wrap.appendChild(card);
+        return;
+      }
+
+      if (item.type === 'reserva') {
+        card.classList.add('mob-card-reserva');
+        const btn = document.createElement('a');
+        btn.href = 'https://espaigastronomia.simplybook.it/v2/#book';
+        btn.target = '_blank'; btn.rel = 'noopener noreferrer';
+        btn.className = 'mob-sel-cta';
+        btn.innerHTML = `<span>${(ITEM_LABELS['reserva']||{})[lang]||'Reservar'}</span><span class="mob-sel-cta-arrow"></span>`;
+        card.appendChild(btn);
+        wrap.appendChild(card);
+        return;
+      }
+
+      if (item.type === 'mapa') {
+        card.innerHTML = '';
+        const inner = document.createElement('div');
+        inner.className = 'mob-card-mapa';
+        const frame = document.createElement('div');
+        frame.className = 'mob-card-map-frame';
+        frame.innerHTML = `<iframe src="${vd.mapSrc}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+        const coords = (vd.mapSrc.match(/[?&]q=([\d.,]+)/) || [])[1] || '';
+        const mapsUrl = coords ? `https://www.google.com/maps?q=${coords}` : 'https://www.google.com/maps';
+        const btn = document.createElement('a');
+        btn.href = mapsUrl; btn.target = '_blank'; btn.rel = 'noopener noreferrer';
+        btn.className = 'p6-maps-btn';
+        btn.innerHTML = `${MAPS_BTN[lang]||MAPS_BTN['Català']}<span class="p6-maps-btn-arrow"></span>`;
+        inner.appendChild(frame);
+        inner.appendChild(btn);
+        card.appendChild(inner);
+        wrap.appendChild(card);
+        return;
+      }
+
+      if (item.type === 'preus') {
+        card.classList.add('is-preus');
+        const ui = PREUS_UI[lang] || PREUS_UI['Català'];
+        const inner = document.createElement('div');
+        inner.className = 'mob-card-preus-wrap';
+        const title = document.createElement('div');
+        title.className = 'mob-card-preus-title';
+        title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+        inner.appendChild(title);
+
+        const filterEl = document.createElement('div');
+        filterEl.className = 'p6-preus-filter';
+        let activeFilter = null;
+        ['dis','div','diu','dll'].forEach(day => {
+          const pill = document.createElement('button');
+          pill.className = 'p6-preus-pill'; pill.textContent = ui[day]; pill.dataset.day = day;
+          pill.onclick = () => {
+            activeFilter = activeFilter === day ? null : day;
+            filterEl.querySelectorAll('.p6-preus-pill').forEach(p => p.classList.toggle('is-active', p.dataset.day === activeFilter && activeFilter !== null));
+            tableEl.querySelectorAll('tr.data-row').forEach(r => r.classList.toggle('is-dimmed', activeFilter !== null && r.dataset.day !== activeFilter));
+          };
+          filterEl.appendChild(pill);
+        });
+        inner.appendChild(filterEl);
+
+        const tableEl = document.createElement('table');
+        tableEl.className = 'p6-preus-table';
+        tableEl.innerHTML = `<tr class="p6-preus-thead"><td>${ui.date}</td><td class="td-min">${ui.min}</td><td class="td-price">${ui.price}</td></tr>`;
+        item.rows.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'data-row'; tr.dataset.day = row.day;
+          const dateStr = (PREUSDATE_TRANS[lang] || {})[row.date] || row.date;
+          tr.innerHTML = `<td>${dateStr}</td><td class="td-min">${row.min}</td><td class="td-price">${row.price}<span class="td-iva">+IVA</span></td>`;
+          tableEl.appendChild(tr);
+        });
+        inner.appendChild(tableEl);
+
+        if (item.notes) {
+          item.notes.forEach(note => {
+            const fn = document.createElement('div');
+            fn.className = 'p6-preus-footnote';
+            fn.textContent = (PREUSNOTE_TRANS[lang] || {})[note] || note;
+            inner.appendChild(fn);
+          });
+        }
+        card.appendChild(inner);
+        wrap.appendChild(card);
+        return;
+      }
+
+      // Standard item
+      const imgs = (item.images && item.images.length > 0) ? item.images : item.img ? [item.img] : [vd.fallback];
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'mob-card-img';
+      makeMobCarousel(imgWrap, imgs);
+      card.appendChild(imgWrap);
+
+      const body = document.createElement('div');
+      body.className = 'mob-card-body';
+
+      const title = document.createElement('div');
+      title.className = 'mob-card-title';
+      title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+      body.appendChild(title);
+
+      if (item.features) {
+        const ul = document.createElement('ul');
+        ul.className = 'mob-card-features';
+        item.features.forEach(f => { const li = document.createElement('li'); li.textContent = tFeat[f] || f; ul.appendChild(li); });
+        body.appendChild(ul);
+      }
+      if (item.note) {
+        const note = document.createElement('div');
+        note.className = 'mob-card-note';
+        note.textContent = tNote[item.note] || item.note;
+        body.appendChild(note);
+      }
+      if (item.price) {
+        const price = document.createElement('div');
+        price.className = 'mob-card-price';
+        price.innerHTML = `${item.price}<span class="mob-card-price-iva">+IVA</span>`;
+        body.appendChild(price);
+      }
+      if (item.key === 'menu') {
+        const preusLabel = (ITEM_TITLES['preus']||{})[lang] || 'Preu del menú';
+        const btn = document.createElement('button');
+        btn.className = 'p6-preus-link-btn';
+        btn.innerHTML = `${preusLabel}<span class="p6-preus-link-arrow"></span>`;
+        btn.onclick = () => document.getElementById('mob-card-preus')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        body.appendChild(btn);
+      }
+
+      card.appendChild(body);
+      wrap.appendChild(card);
+    });
   }
 
   /* ═══════════════════════════════════════════════════════
