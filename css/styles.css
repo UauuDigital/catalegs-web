@@ -37,9 +37,12 @@
       display: flex; align-items: center;
       justify-content: space-between;
       padding: 0 44px;
-      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1),
+                  background 0.4s ease;
     }
     .site-header.hdr-hidden { transform: translateY(-100%); }
+    .site-header.is-light { background: #F2EFEE; }
+    .site-header.is-venue { background: #221F1E; }
 
     /* Logo always visible, centred */
     .hdr-logo {
@@ -967,7 +970,10 @@
       }
       .mob-card-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
       /* Reserva card */
-      .mob-card-reserva { background: transparent; }
+      .mob-card-reserva { display: flex; align-items: center; justify-content: center; padding: 36px 24px; }
+      .mob-card-reserva .mob-sel-cta { background: #221F1E; border-color: #221F1E; color: #fff; margin-top: 0; }
+      .mob-card-reserva .mob-sel-cta:hover { background: #3a3532; border-color: #3a3532; }
+      .mob-card-reserva .mob-sel-cta-arrow { background: #fff; }
 
       /* ── P5 item detail → bottom drawer ── */
       .p6-layout {

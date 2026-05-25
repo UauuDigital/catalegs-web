@@ -209,6 +209,7 @@
     header.classList.toggle('is-light', to === 3);
     header.classList.toggle('is-venue', to === 4 || to === 5);
     rebuildNav();
+    if (to === 0) requestAnimationFrame(initPage0);
     if (to === 2) requestAnimationFrame(initPage2);
     if (to === 3) requestAnimationFrame(initPage3);
     if (to === 4) requestAnimationFrame(initPage4);
@@ -265,33 +266,30 @@
   );
 
   // Page 0 — Mobile combined form
-  {
-    const MOB_STRINGS = {
-      'Català':  { lang: 'Idioma',   year: 'Any',  cta: 'Continuar' },
-      'Español': { lang: 'Idioma',   year: 'Año',  cta: 'Continuar' },
-      'English': { lang: 'Language', year: 'Year', cta: 'Continue'  },
-    };
-    const mobLang      = document.getElementById('mob-lang');
-    const mobYear      = document.getElementById('mob-year');
-    const mobCta       = document.getElementById('mob-sel-cta');
-    const mobCtaLabel  = document.getElementById('mob-sel-cta-label');
-    const mobLabelLang = document.getElementById('mob-label-lang');
-    const mobLabelYear = document.getElementById('mob-label-year');
-
-    function updateMobStrings(language) {
-      const s = MOB_STRINGS[language] || MOB_STRINGS['Català'];
-      mobLabelLang.textContent = s.lang;
-      mobLabelYear.textContent = s.year;
-      mobCtaLabel.textContent  = s.cta;
-    }
-
-    mobLang.addEventListener('change', () => updateMobStrings(mobLang.value));
-    mobCta.addEventListener('click', () => {
-      sel.language = mobLang.value;
-      sel.year     = mobYear.value;
-      navigate(2);
-    });
+  const MOB_STRINGS = {
+    'Català':  { lang: 'Idioma',   year: 'Any',  cta: 'Continuar' },
+    'Español': { lang: 'Idioma',   year: 'Año',  cta: 'Continuar' },
+    'English': { lang: 'Language', year: 'Year', cta: 'Continue'  },
+  };
+  function updateMobStrings(language) {
+    const s = MOB_STRINGS[language] || MOB_STRINGS['Català'];
+    document.getElementById('mob-label-lang').textContent = s.lang;
+    document.getElementById('mob-label-year').textContent = s.year;
+    document.getElementById('mob-sel-cta-label').textContent = s.cta;
   }
+  function initPage0() {
+    const mobLang = document.getElementById('mob-lang');
+    const mobYear = document.getElementById('mob-year');
+    if (sel.language) mobLang.value = sel.language;
+    if (sel.year)     mobYear.value = sel.year;
+    updateMobStrings(mobLang.value);
+  }
+  document.getElementById('mob-lang').addEventListener('change', e => updateMobStrings(e.target.value));
+  document.getElementById('mob-sel-cta').addEventListener('click', () => {
+    sel.language = document.getElementById('mob-lang').value;
+    sel.year     = document.getElementById('mob-year').value;
+    navigate(2);
+  });
 
   /* ═══════════════════════════════════════════════════════
      PAGE 2 — QUATRE ESCENARIS
