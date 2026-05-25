@@ -168,16 +168,29 @@
   function attachScrollHide(scrollEl) {
     const hdr = document.querySelector('.site-header');
     let lastY = 0;
+    let upAccum = 0;
     scrollEl.onscroll = () => {
-      const y = scrollEl.scrollTop;
-      if (y > lastY && y > 40) hdr.classList.add('hdr-hidden');
-      else hdr.classList.remove('hdr-hidden');
+      const y = Math.max(0, scrollEl.scrollTop);
+      const dy = y - lastY;
+      if (dy > 0) {
+        upAccum = 0;
+        if (y > 40) hdr.classList.add('hdr-hidden');
+      } else {
+        upAccum += -dy;
+        if (upAccum > 40) hdr.classList.remove('hdr-hidden');
+      }
       lastY = y;
     };
   }
 
+  const bgVideo = document.querySelector('.video-bg video');
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && bgVideo && bgVideo.paused) bgVideo.play().catch(() => {});
+  });
+
   function navigate(to, { push = true } = {}) {
     document.querySelector('.site-header').classList.remove('hdr-hidden');
+    if (to === 0 && bgVideo && bgVideo.paused) bgVideo.play().catch(() => {});
     if (to === curPage) return;
     const fwd   = to > curPage;
     const fromEl = document.getElementById(PAGES[curPage].id);
