@@ -549,6 +549,64 @@
       color: rgba(34,31,30,0.35); margin-top: 14px; line-height: 1.6; flex-shrink: 0;
     }
 
+    /* ── PREUS INTERACTIU ── */
+    .preus-int-title {
+      font-family: 'Inter', sans-serif; font-size: clamp(18px, 1.8vw, 24px);
+      font-weight: 600; color: #221F1E; line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    .preus-int-month-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+      margin-bottom: 20px;
+    }
+    .preus-int-month-btn {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: rgba(34,31,30,0.45); border: 1px solid rgba(34,31,30,0.15);
+      border-radius: 8px; padding: 7px 4px; cursor: pointer; background: transparent;
+      transition: all 0.18s ease; text-align: center;
+    }
+    .preus-int-month-btn:hover { color: #221F1E; border-color: rgba(34,31,30,0.4); }
+    .preus-int-month-btn.is-active { color: #221F1E; border-color: rgba(34,31,30,0.7); background: rgba(34,31,30,0.07); }
+    .preus-int-label {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase; color: rgba(34,31,30,0.4);
+      margin-bottom: 10px;
+    }
+    .preus-int-day-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+      margin-bottom: 20px;
+    }
+    .preus-int-step { display: none; }
+    .preus-int-step--visible { display: block; }
+    .preus-int-result { margin-bottom: 4px; }
+    .preus-int-hint {
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300;
+      color: rgba(34,31,30,0.35); padding: 8px 0;
+    }
+    .preus-int-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 0; border-bottom: 1px solid rgba(34,31,30,0.08);
+    }
+    .preus-int-row:last-child { border-bottom: none; }
+    .preus-int-row-day {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase; color: rgba(34,31,30,0.45);
+    }
+    .preus-int-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .preus-int-row-price {
+      font-family: 'Ogg', Georgia, serif; font-size: clamp(20px, 2vw, 28px);
+      letter-spacing: -0.02em; color: #221F1E; line-height: 1;
+    }
+    .preus-int-iva {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300;
+      color: rgba(34,31,30,0.4); margin-left: 3px; vertical-align: middle;
+    }
+    .preus-int-row-min {
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+      color: #221F1E; letter-spacing: -0.01em;
+    }
+
     /* ── GALERIA GRID ── */
     .p6-layout.is-galeria .p6-center { padding: 96px 40px 52px; }
     .p6-grid {
@@ -856,9 +914,8 @@
       }
       .mob-card .p6-preus-link-btn { display: none; }
       /* Carousel mòbil */
-      .mob-car-track { position: absolute; inset: 0; }
-      .mob-car-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.38s ease; }
-      .mob-car-slide.is-active { opacity: 1; }
+      .mob-car-track { position: absolute; inset: 0; display: flex; will-change: transform; }
+      .mob-car-slide { flex: 0 0 100%; height: 100%; overflow: hidden; }
       .mob-car-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .mob-car-btn {
         position: absolute; top: 50%; transform: translateY(-50%);

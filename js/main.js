@@ -246,7 +246,7 @@
   makeWheel(
     document.getElementById('track-1'),
     document.getElementById('list-1'),
-    ['2026', '2027', '2028'],
+    ['2026', '2027'],
     year => { sel.year = year; navigate(2); },
     1
   );
@@ -1522,16 +1522,21 @@
       return;
     }
     let cur = 0;
+    let startX = 0;
+    let dragging = false;
+    let w = 0;
+
     const track = document.createElement('div');
     track.className = 'mob-car-track';
     imgs.forEach((src, i) => {
       const slide = document.createElement('div');
-      slide.className = 'mob-car-slide' + (i === 0 ? ' is-active' : '');
+      slide.className = 'mob-car-slide';
       const img = document.createElement('img');
       img.src = src; img.alt = ''; img.loading = i === 0 ? 'eager' : 'lazy';
       slide.appendChild(img);
       track.appendChild(slide);
     });
+
     const dotsEl = document.createElement('div');
     dotsEl.className = 'mob-car-dots';
     imgs.forEach((_, i) => {
@@ -1540,15 +1545,44 @@
       dot.onclick = () => goTo(i);
       dotsEl.appendChild(dot);
     });
-    function goTo(idx) {
-      const slides = track.querySelectorAll('.mob-car-slide');
-      const dots   = dotsEl.querySelectorAll('.mob-car-dot');
-      slides[cur].classList.remove('is-active');
-      dots[cur].classList.remove('is-active');
-      cur = (idx + imgs.length) % imgs.length;
-      slides[cur].classList.add('is-active');
-      dots[cur].classList.add('is-active');
+
+    function snap(x, animate) {
+      track.style.transition = animate ? 'transform 0.32s cubic-bezier(.22,1,.36,1)' : 'none';
+      track.style.transform = `translateX(${x}px)`;
     }
+
+    function goTo(idx) {
+      cur = Math.max(0, Math.min(imgs.length - 1, idx));
+      w = container.offsetWidth;
+      snap(-cur * w, true);
+      dotsEl.querySelectorAll('.mob-car-dot').forEach((d, i) => d.classList.toggle('is-active', i === cur));
+    }
+
+    track.addEventListener('touchstart', e => {
+      w = container.offsetWidth;
+      startX = e.touches[0].clientX;
+      dragging = true;
+      track.style.transition = 'none';
+    }, { passive: true });
+
+    track.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - startX;
+      let x = -cur * w + dx;
+      // edge resistance
+      if (x > 0)                        x = dx * 0.2;
+      if (x < -(imgs.length - 1) * w)  x = -(imgs.length - 1) * w + (x + (imgs.length - 1) * w) * 0.2;
+      track.style.transform = `translateX(${x}px)`;
+    }, { passive: true });
+
+    track.addEventListener('touchend', e => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+      else goTo(cur);
+    }, { passive: true });
+
     const prev = document.createElement('button');
     prev.className = 'mob-car-btn mob-car-prev';
     prev.innerHTML = `<svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1L1 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1557,16 +1591,116 @@
     next.className = 'mob-car-btn mob-car-next';
     next.innerHTML = `<svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     next.onclick = () => goTo(cur + 1);
-    let startX = 0;
-    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
-    }, { passive: true });
+
+    snap(0, false);
     container.appendChild(track);
     container.appendChild(prev);
     container.appendChild(next);
     container.appendChild(dotsEl);
+  }
+
+  function findPreusRow(rows, dayKey, monthNum) {
+    const MONTHS = ['gener','febrer','març','abril','maig','juny','juliol','agost','setembre','octubre','novembre','desembre'];
+    const m = MONTHS[monthNum - 1];
+    return rows.find(r => {
+      if (r.day !== dayKey) return false;
+      const d = r.date.toLowerCase();
+      return d.includes("de l'any") || d.includes(m);
+    }) || null;
+  }
+
+  function buildPreusInteractive(container, item, lang) {
+    const PI = {
+      'Català':  { months:['Gen','Feb','Mar','Abr','Mai','Jun','Jul','Ago','Set','Oct','Nov','Des'], labelMonth:'Seleccioneu el mes', labelDay:'Seleccioneu el dia', min:'Mínim', per:'persones' },
+      'Español': { months:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'], labelMonth:'Selecciona el mes', labelDay:'Selecciona el día', min:'Mínimo', per:'personas' },
+      'English': { months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], labelMonth:'Select the month', labelDay:'Select the day',   min:'Minimum', per:'people' },
+    };
+    const ui = PREUS_UI[lang] || PREUS_UI['Català'];
+    const pi = PI[lang]       || PI['Català'];
+    let selMonth = null;
+    let selDay   = null;
+
+    const title = document.createElement('div');
+    title.className = 'preus-int-title';
+    title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+    container.appendChild(title);
+
+    // Step 1 — month
+    const monthLabel = document.createElement('div');
+    monthLabel.className = 'preus-int-label';
+    monthLabel.textContent = pi.labelMonth;
+    container.appendChild(monthLabel);
+
+    const monthGrid = document.createElement('div');
+    monthGrid.className = 'preus-int-month-grid';
+    pi.months.forEach((label, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'preus-int-month-btn'; btn.textContent = label; btn.dataset.month = i + 1;
+      btn.onclick = () => {
+        selMonth = selMonth === i + 1 ? null : i + 1;
+        selDay = null;
+        monthGrid.querySelectorAll('.preus-int-month-btn').forEach(b =>
+          b.classList.toggle('is-active', +b.dataset.month === selMonth));
+        daySection.classList.toggle('preus-int-step--visible', !!selMonth);
+        if (!selMonth) dayGrid.querySelectorAll('.preus-int-month-btn').forEach(b => b.classList.remove('is-active'));
+        updateResult();
+      };
+      monthGrid.appendChild(btn);
+    });
+    container.appendChild(monthGrid);
+
+    // Step 2 — day (hidden until month chosen)
+    const daySection = document.createElement('div');
+    daySection.className = 'preus-int-step';
+
+    const dayLabel = document.createElement('div');
+    dayLabel.className = 'preus-int-label';
+    dayLabel.textContent = pi.labelDay;
+    daySection.appendChild(dayLabel);
+
+    const dayGrid = document.createElement('div');
+    dayGrid.className = 'preus-int-day-grid';
+    ['dis','div','diu','dll'].forEach(dk => {
+      const btn = document.createElement('button');
+      btn.className = 'preus-int-month-btn'; btn.textContent = ui[dk]; btn.dataset.day = dk;
+      btn.onclick = () => {
+        selDay = selDay === dk ? null : dk;
+        dayGrid.querySelectorAll('.preus-int-month-btn').forEach(b =>
+          b.classList.toggle('is-active', b.dataset.day === selDay && selDay !== null));
+        updateResult();
+      };
+      dayGrid.appendChild(btn);
+    });
+    daySection.appendChild(dayGrid);
+    container.appendChild(daySection);
+
+    // Result
+    const resultEl = document.createElement('div');
+    resultEl.className = 'preus-int-result';
+    container.appendChild(resultEl);
+
+    function updateResult() {
+      if (!selMonth || !selDay) { resultEl.innerHTML = ''; return; }
+      const row = findPreusRow(item.rows, selDay, selMonth);
+      if (!row) { resultEl.innerHTML = ''; return; }
+      resultEl.innerHTML = `
+        <div class="preus-int-row">
+          <div class="preus-int-row-day">${ui[selDay]}</div>
+          <div class="preus-int-row-right">
+            <div class="preus-int-row-price">${row.price}<span class="preus-int-iva"> +IVA</span></div>
+            <div class="preus-int-row-min">${pi.min} ${row.min} ${pi.per}</div>
+          </div>
+        </div>`;
+    }
+
+    if (item.notes) {
+      item.notes.forEach(note => {
+        const fn = document.createElement('div');
+        fn.className = 'p6-preus-footnote';
+        fn.textContent = (PREUSNOTE_TRANS[lang] || {})[note] || note;
+        container.appendChild(fn);
+      });
+    }
   }
 
   function buildMobCards() {
@@ -1646,49 +1780,9 @@
 
       if (item.type === 'preus') {
         card.classList.add('is-preus');
-        const ui = PREUS_UI[lang] || PREUS_UI['Català'];
         const inner = document.createElement('div');
         inner.className = 'mob-card-preus-wrap';
-        const title = document.createElement('div');
-        title.className = 'mob-card-preus-title';
-        title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
-        inner.appendChild(title);
-
-        const filterEl = document.createElement('div');
-        filterEl.className = 'p6-preus-filter';
-        let activeFilter = null;
-        ['dis','div','diu','dll'].forEach(day => {
-          const pill = document.createElement('button');
-          pill.className = 'p6-preus-pill'; pill.textContent = ui[day]; pill.dataset.day = day;
-          pill.onclick = () => {
-            activeFilter = activeFilter === day ? null : day;
-            filterEl.querySelectorAll('.p6-preus-pill').forEach(p => p.classList.toggle('is-active', p.dataset.day === activeFilter && activeFilter !== null));
-            tableEl.querySelectorAll('tr.data-row').forEach(r => r.classList.toggle('is-dimmed', activeFilter !== null && r.dataset.day !== activeFilter));
-          };
-          filterEl.appendChild(pill);
-        });
-        inner.appendChild(filterEl);
-
-        const tableEl = document.createElement('table');
-        tableEl.className = 'p6-preus-table';
-        tableEl.innerHTML = `<tr class="p6-preus-thead"><td>${ui.date}</td><td class="td-min">${ui.min}</td><td class="td-price">${ui.price}</td></tr>`;
-        item.rows.forEach(row => {
-          const tr = document.createElement('tr');
-          tr.className = 'data-row'; tr.dataset.day = row.day;
-          const dateStr = (PREUSDATE_TRANS[lang] || {})[row.date] || row.date;
-          tr.innerHTML = `<td>${dateStr}</td><td class="td-min">${row.min}</td><td class="td-price">${row.price}<span class="td-iva">+IVA</span></td>`;
-          tableEl.appendChild(tr);
-        });
-        inner.appendChild(tableEl);
-
-        if (item.notes) {
-          item.notes.forEach(note => {
-            const fn = document.createElement('div');
-            fn.className = 'p6-preus-footnote';
-            fn.textContent = (PREUSNOTE_TRANS[lang] || {})[note] || note;
-            inner.appendChild(fn);
-          });
-        }
+        buildPreusInteractive(inner, item, lang);
         card.appendChild(inner);
         wrap.appendChild(card);
         return;
@@ -1986,72 +2080,9 @@
 
     // ── RIGHT ──
     if (item.type === 'preus') {
-      // Interactive price table
-      const ui = PREUS_UI[lang] || PREUS_UI['Català'];
-      const days = ['dis','div','diu','dll'];
-      const langLabels = { dis: ui.dis, div: ui.div, diu: ui.diu, dll: ui.dll };
-      let activeFilter = null;
-
       const wrap = document.createElement('div');
       wrap.className = 'p6-preus-wrap';
-
-      const title = document.createElement('div');
-      title.className = 'p6-preus-title';
-      title.textContent = (ITEM_TITLES[item.key] || {})[lang] || (ITEM_TITLES[item.key] || {})['Català'] || item.key;
-      wrap.appendChild(title);
-
-      const filterEl = document.createElement('div');
-      filterEl.className = 'p6-preus-filter';
-      days.forEach(day => {
-        const pill = document.createElement('button');
-        pill.className = 'p6-preus-pill';
-        pill.textContent = langLabels[day];
-        pill.dataset.day = day;
-        pill.onclick = () => {
-          if (activeFilter === day) {
-            activeFilter = null;
-            filterEl.querySelectorAll('.p6-preus-pill').forEach(p => p.classList.remove('is-active'));
-          } else {
-            activeFilter = day;
-            filterEl.querySelectorAll('.p6-preus-pill').forEach(p => p.classList.toggle('is-active', p.dataset.day === day));
-          }
-          tableEl.querySelectorAll('tr.data-row').forEach(row => {
-            row.classList.toggle('is-dimmed', activeFilter !== null && row.dataset.day !== activeFilter);
-          });
-        };
-        filterEl.appendChild(pill);
-      });
-      wrap.appendChild(filterEl);
-
-      const scroll = document.createElement('div');
-      scroll.className = 'p6-preus-scroll';
-
-      const tableEl = document.createElement('table');
-      tableEl.className = 'p6-preus-table';
-      const thead = document.createElement('tr');
-      thead.className = 'p6-preus-thead';
-      thead.innerHTML = `<td>${ui.date}</td><td class="td-min">${ui.min}</td><td class="td-price">${ui.price}</td>`;
-      tableEl.appendChild(thead);
-      item.rows.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.className = 'data-row';
-        tr.dataset.day = row.day;
-        const dateStr = (PREUSDATE_TRANS[lang] || {})[row.date] || row.date;
-        tr.innerHTML = `<td>${dateStr}</td><td class="td-min">${row.min}</td><td class="td-price">${row.price}<span class="td-iva">+IVA</span></td>`;
-        tableEl.appendChild(tr);
-      });
-      scroll.appendChild(tableEl);
-      wrap.appendChild(scroll);
-
-      if (item.notes) {
-        item.notes.forEach(note => {
-          const fn = document.createElement('div');
-          fn.className = 'p6-preus-footnote';
-          fn.textContent = (PREUSNOTE_TRANS[lang] || {})[note] || note;
-          wrap.appendChild(fn);
-        });
-      }
-
+      buildPreusInteractive(wrap, item, lang);
       rightEl.innerHTML = '';
       rightEl.appendChild(wrap);
 
