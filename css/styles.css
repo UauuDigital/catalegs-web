@@ -135,6 +135,8 @@
     .page.is-above  { opacity: 0;  transform: translateY(-52px); pointer-events: none; }
     .page.is-below  { opacity: 0;  transform: translateY(52px);  pointer-events: none; }
 
+    .mob-sel-wrap { display: none; }
+
     /* ── WHEEL ── */
     .wheel-track {
       width: 600px; max-width: 92vw; height: 400px;
@@ -363,19 +365,24 @@
     }
     .p5-left.has-hover .p5-item           { opacity: 0.22; }
     .p5-left.has-hover .p5-item.is-active { opacity: 1; }
+    .p5-list-year {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 600; letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1.4em;
+      pointer-events: none;
+    }
 
     /* ── PAGE 5 — ITEM DETAIL ── */
     #page-5 { background: #221F1E; align-items: stretch; justify-content: stretch; }
-    .year-notice {
-      position: absolute; top: 80px; left: 0; right: 0; z-index: 5;
-      height: 36px; display: none; align-items: center; justify-content: center;
-      background: rgba(242,239,238,0.09); border-bottom: 1px solid rgba(242,239,238,0.12);
-      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: rgba(242,239,238,0.6);
+    .list-year-notice {
+      display: block;
+      font-family: 'Inter', sans-serif; font-size: clamp(9px, 0.7vw, 11px);
+      font-weight: 400; letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.35em;
     }
-    .year-notice.is-visible { display: flex; }
-    #page-5.has-notice .p6-layout { margin-top: 36px; height: calc(100% - 36px); }
     .p6-layout { width: 100%; height: 100%; display: flex; align-items: stretch; }
     .p6-layout.is-galeria .p6-right  { display: none; }
     .p6-layout.is-galeria .p6-center { flex: 1; overflow-y: auto; }
@@ -397,6 +404,14 @@
     }
     .p6-left.has-hover .p6-item           { opacity: 0.22; }
     .p6-left.has-hover .p6-item.is-active { opacity: 1; }
+    .p6-list-year {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 600; letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1.4em;
+      pointer-events: none;
+    }
 
     .p6-center {
       flex: 0 0 44%;
@@ -617,6 +632,35 @@
       border-top: 1px solid currentColor;
       transform: translateY(-50%) rotate(45deg);
     }
+    .p6-preus-link-btn {
+      display: inline-flex; align-items: center; gap: 14px;
+      margin-top: 22px; align-self: flex-start;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #fff; background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 100px;
+      padding: 13px 26px 13px 30px;
+      cursor: pointer;
+      transition: border-color 0.35s ease, background 0.35s ease, gap 0.35s cubic-bezier(.22,1,.36,1);
+    }
+    .p6-preus-link-btn:hover {
+      border-color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.07);
+      gap: 22px;
+    }
+    .p6-preus-link-arrow {
+      display: block; position: relative;
+      width: 22px; height: 1px; background: currentColor; flex-shrink: 0;
+    }
+    .p6-preus-link-arrow::after {
+      content: ''; position: absolute;
+      right: 0; top: 50%;
+      width: 5px; height: 5px;
+      border-right: 1px solid currentColor;
+      border-top: 1px solid currentColor;
+      transform: translateY(-50%) rotate(45deg);
+    }
 
     /* ── MOBILE / TABLET ── */
     .p2-mobile    { display: none; }
@@ -632,8 +676,52 @@
       .book-link { display: none; }
       .menu-overlay { padding: 60px 28px 40px; }
       .overlay-nav-item { font-size: 44px; }
-      .year-notice { top: 60px; font-size: 10px; height: 32px; }
-      #page-5.has-notice .p6-layout { margin-top: 32px; height: calc(100% - 32px); }
+
+      /* ── P0 mobile combined form ── */
+      #page-0 .wheel-track { display: none; }
+      .mob-sel-wrap {
+        display: flex; flex-direction: column; gap: 32px;
+        width: 100%; padding: 0 8%;
+      }
+      .mob-sel-group { display: flex; flex-direction: column; gap: 8px; }
+      .mob-sel-label {
+        font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: rgba(255,255,255,0.4);
+      }
+      .mob-sel-field {
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-bottom: 10px;
+      }
+      .mob-sel {
+        appearance: none; -webkit-appearance: none;
+        background: transparent; border: none; outline: none;
+        font-family: 'Ogg', Georgia, serif;
+        font-size: clamp(34px, 9vw, 52px); letter-spacing: -0.02em;
+        color: #fff; width: 100%; cursor: pointer;
+      }
+      .mob-sel option { background: #221F1E; color: #fff; }
+      .mob-sel-cta {
+        margin-top: 8px; align-self: flex-start;
+        display: inline-flex; align-items: center; gap: 14px;
+        font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #fff; background: transparent;
+        border: 1px solid rgba(255,255,255,0.4); border-radius: 100px;
+        padding: 15px 28px 15px 32px; cursor: pointer;
+        transition: border-color 0.35s ease, background 0.35s ease, gap 0.35s cubic-bezier(.22,1,.36,1);
+      }
+      .mob-sel-cta:hover { border-color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.07); gap: 22px; }
+      .mob-sel-cta-arrow {
+        display: block; position: relative;
+        width: 28px; height: 1px; background: currentColor; flex-shrink: 0;
+      }
+      .mob-sel-cta-arrow::after {
+        content: ''; position: absolute; right: 0; top: 50%;
+        width: 6px; height: 6px;
+        border-right: 1px solid currentColor; border-top: 1px solid currentColor;
+        transform: translateY(-50%) rotate(45deg);
+      }
 
       /* ── P0 / P1 wheels ── */
       .wheel-track { height: 320px; }
@@ -762,6 +850,12 @@
       .p6-mob-pill.is-active {
         color: #fff; border-color: rgba(255,255,255,0.6);
         background: rgba(255,255,255,0.08);
+      }
+      .p6-mob-year {
+        flex-shrink: 0; align-self: center;
+        font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+        letter-spacing: -0.01em; color: rgba(255,255,255,0.45);
+        padding-right: 6px; pointer-events: none;
       }
 
       /* Center: image/map/grid area */

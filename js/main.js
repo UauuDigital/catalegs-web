@@ -239,6 +239,35 @@
     1
   );
 
+  // Page 0 — Mobile combined form
+  {
+    const MOB_STRINGS = {
+      'Català':  { lang: 'Idioma',   year: 'Any',  cta: 'Continuar' },
+      'Español': { lang: 'Idioma',   year: 'Año',  cta: 'Continuar' },
+      'English': { lang: 'Language', year: 'Year', cta: 'Continue'  },
+    };
+    const mobLang      = document.getElementById('mob-lang');
+    const mobYear      = document.getElementById('mob-year');
+    const mobCta       = document.getElementById('mob-sel-cta');
+    const mobCtaLabel  = document.getElementById('mob-sel-cta-label');
+    const mobLabelLang = document.getElementById('mob-label-lang');
+    const mobLabelYear = document.getElementById('mob-label-year');
+
+    function updateMobStrings(language) {
+      const s = MOB_STRINGS[language] || MOB_STRINGS['Català'];
+      mobLabelLang.textContent = s.lang;
+      mobLabelYear.textContent = s.year;
+      mobCtaLabel.textContent  = s.cta;
+    }
+
+    mobLang.addEventListener('change', () => updateMobStrings(mobLang.value));
+    mobCta.addEventListener('click', () => {
+      sel.language = mobLang.value;
+      sel.year     = mobYear.value;
+      navigate(2);
+    });
+  }
+
   /* ═══════════════════════════════════════════════════════
      PAGE 2 — QUATRE ESCENARIS
   ═══════════════════════════════════════════════════════ */
@@ -1065,7 +1094,7 @@
           { key:'cerimonia', type:'standard',
             images: _CM_CERIM,
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Possibilitat de celebrar cerimònia religiosa'],
-            note: '*El preu de la cerimònia no inclou cerimoniant', price: '1090,00€' },
+            note: '*El preu de la cerimònia no inclou cerimoniant', price: '1190,00€' },
           { key:'menu', type:'standard',
             images: gastImgs('can-macia'),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar','Papereria (minutes, sitting plan, marca llocs)','Coordinació del casament'],
@@ -1305,10 +1334,6 @@
             img: IMG + 'castell-de-tous/servei-de-dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1250,00€' },
-          { key:'allotjament', type:'standard',
-            img: IMG + 'castell-de-tous.webp',
-            features: ['Allotjament complert fins a 21 persones',"Inclou l'esmorzar de l'endemà",'Sortida a les 11:30h'],
-            note: '*Obligatori en dissabtes de Maig a Octubre', price: '1390,00€' },
           { key:'galeria', type:'galeria', images: _CDT_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
@@ -1453,14 +1478,23 @@
     const venueIdx = sel.venueIdx ?? 0;
     document.getElementById('hdr-venue-name').innerHTML = VENUE_TITLES[venueIdx];
     const items = getVenueItems();
+    const p5List = document.getElementById('p5-list');
     buildItemList(
-      document.getElementById('p5-list'), 'p5-item', items, lang,
+      p5List, 'p5-item', items, lang,
       null,
       idx => {
         if (items[idx].type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
         sel.itemIdx = idx; navigate(5);
       }
     );
+    const p5Year = document.createElement('div');
+    p5Year.className = 'p5-list-year';
+    if (sel.year === '2028') {
+      p5Year.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
+    } else {
+      p5Year.textContent = sel.year || '2027';
+    }
+    p5List.insertBefore(p5Year, p5List.firstChild);
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -1598,10 +1632,6 @@
     const venueIdx = sel.venueIdx ?? 0;
     const itemIdx  = sel.itemIdx  ?? 0;
     const items    = getVenueItems();
-    const notice   = document.getElementById('year-notice');
-    const is2028   = sel.year === '2028';
-    notice.classList.toggle('is-visible', is2028);
-    document.getElementById('page-5').classList.toggle('has-notice', is2028);
     const item     = items[itemIdx] ?? items[0];
     const vd       = VENUE_DATA[venueIdx];
 
@@ -1618,6 +1648,16 @@
       });
       listEl.classList.add('has-hover');
     });
+    // Year label at top of item list
+    const yearLabel = document.createElement('div');
+    yearLabel.className = 'p6-list-year';
+    if (sel.year === '2028') {
+      yearLabel.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
+    } else {
+      yearLabel.textContent = sel.year || '2027';
+    }
+    listEl.insertBefore(yearLabel, listEl.firstChild);
+
     // Persist selection when mouse leaves
     listEl.onmouseleave = () => {
       listEl.querySelectorAll('.p6-item').forEach((el, i) => {
@@ -1633,6 +1673,10 @@
     // Mobile: horizontal pills nav
     const mobNav = document.getElementById('p6-mob-nav');
     mobNav.innerHTML = '';
+    const mobYear = document.createElement('div');
+    mobYear.className = 'p6-mob-year';
+    mobYear.textContent = sel.year || '2027';
+    mobNav.appendChild(mobYear);
     items.forEach((it, i) => {
       const pill = document.createElement('button');
       pill.className = 'p6-mob-pill' + (i === itemIdx ? ' is-active' : '');
@@ -1792,7 +1836,26 @@
       const tNote = NOTE_TRANS[lang] || {};
       const noteHtml  = item.note ? `<div class="p6-note">${tNote[item.note] || item.note}</div>` : '';
       const priceHtml = item.price ? `<div class="p6-price">${item.price}<span class="p6-price-iva">+IVA</span></div>` : '';
-      rightEl.innerHTML = titleHtml + featuresHtml + noteHtml + priceHtml;
+      const preusBtnHtml = item.key === 'menu'
+        ? `<button class="p6-preus-link-btn">${(ITEM_TITLES['preus']||{})[lang]||(ITEM_TITLES['preus']||{})['Català']||'Preu del menú'}<span class="p6-preus-link-arrow"></span></button>`
+        : '';
+      rightEl.innerHTML = titleHtml + featuresHtml + noteHtml + priceHtml + preusBtnHtml;
+      if (item.key === 'menu') {
+        rightEl.querySelector('.p6-preus-link-btn').onclick = () => {
+          const allItems = getVenueItems();
+          const preusIdx = allItems.findIndex(i => i.key === 'preus');
+          if (preusIdx === -1) return;
+          const listEl = document.getElementById('p6-list');
+          const mobNav = document.getElementById('p6-mob-nav');
+          sel.itemIdx = preusIdx;
+          renderItemDetail(allItems[preusIdx], vd);
+          listEl.querySelectorAll('.p6-item').forEach((el, i) => el.classList.toggle('is-active', i === preusIdx));
+          listEl.classList.add('has-hover');
+          mobNav.querySelectorAll('.p6-mob-pill').forEach((p, j) => p.classList.toggle('is-active', j === preusIdx));
+          const activePill = mobNav.querySelector('.p6-mob-pill.is-active');
+          if (activePill) activePill.scrollIntoView({ block: 'nearest', inline: 'center' });
+        };
+      }
     }
   }
   
