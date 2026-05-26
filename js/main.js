@@ -1043,92 +1043,45 @@
 
   const IMG = 'https://uauu.cat/media/fotos/finques/';
 
-  // Shared gastronomia filenames (present in every venue folder)
-  const _GAST = [
-    'ca-n-alzina-uauu-taranna-g2a7987.webp','miamoments-629.webp',
-    'pallares-01732.webp','pallares-01763.webp','pallares-02431.webp','pallares-02444.webp',
-    'pallares-02828.webp','pallares-02872.webp','pallares-02887.webp',
-    'pallares-08133.webp','pallares-09425.webp','pallares-09446.webp','pallares-09456.webp',
-    'pepito-09312.webp','pizza-4.webp','porc-iberic-rostit-amb-xalota-i-pinya.webp','untitled-1.webp',
-  ];
-  const gastImgs = v => _GAST.map(f => IMG + v + '/gastronomia/' + f);
+  const _GAST_BASE = 'https://uauu.cat/media/general/gastronomia/';
+  const _GAST = Array.from({ length: 17 }, (_, i) => _GAST_BASE + (i + 1) + '.webp');
+  const gastImgs = () => _GAST;
 
   // Ca n'Alzina specific image arrays
-  const _CNA_CERIM = [
-    "ca-n-alzina-uauu-taranna-g2a7619.webp",
-    "ca-n-alzina-uauu-taranna-m6a3153.webp",
-    "marc-pallars-01560.webp",
-    "marc-pallars-01571.webp",
-    "marc-pallars-01598.webp",
-    "pallares-02286.webp",
-  ].map(f => IMG + "ca-n-alzina/cerimonia/" + f);
+  const _CNA_CERIM = Array.from({ length: 13 }, (_, i) => 'https://uauu.cat/media/finques/ca-n-alzina/cerimonia/' + (i + 3) + '.webp');
 
-  const _CNA_ALLOT = [
-    "atypicalwedding-ca-nalzina-01.webp","atypicalwedding-ca-nalzina-09.webp",
-    "atypicalwedding-ca-nalzina-10.webp","atypicalwedding-ca-nalzina-11.webp",
-    "atypicalwedding-ca-nalzina-15.webp","atypicalwedding-ca-nalzina-19.webp",
-    "boda-laia-y-ana-15-de-772.webp","boda-laia-y-ana-16-de-772.webp",
-    "ca-n-alzina-uauu-taranna-g2a7651.webp","ca-n-alzina-uauu-taranna-g2a7672.webp",
-    "ca-n-alzina-uauu-taranna-g2a7684.webp","ca-n-alzina-uauu-taranna-g2a7708.webp",
-    "ca-n-alzina-uauu-taranna-m6a3135.webp","ca-n-alzina-uauu-taranna-m6a3140.webp",
-    "ca-n-alzina-uauu-taranna-m6a3148.webp",
-    "pallares-07077.webp","pallares-07095.webp","pallares-07165.webp",
-  ].map(f => IMG + "ca-n-alzina/allotjament/" + f);
+  const _CNA_ALLOT = Array.from({ length: 13 }, (_, i) => 'https://uauu.cat/media/finques/ca-n-alzina/allotjament/' + (i + 1) + '.webp');
+
+  // Ca n'Alzina galeria
+  const _CNA_GAL = Array.from({ length: 50 }, (_, i) => i + 1).filter(n => n !== 44).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/galeria-dimatges/' + n + '.webp');
 
   // Can Macià allotjament
-  const _CM_ALLOT = [
-    "0003atypicalwedding.webp","2024-08-02-nuria-oriol-m6a6517.webp","c-a-26.webp",
-    "can-macia-uauu-taranna-m6a3371.webp","can-macia-uauu-taranna-m6a3377.webp",
-    "can-macia-uauu-taranna-m6a3389.webp","can-macia-uauu-taranna-m6a3400.webp",
-    "can-macia-uauu-taranna-m6a3416.webp","can-macia-uauu-taranna-m6a3421.webp",
-    "can-macia-1260.webp","dsc00422.webp",
-  ].map(f => IMG + "can-macia/allotjament/" + f);
+  const _CM_ALLOT = Array.from({ length: 18 }, (_, i) => 'https://uauu.cat/media/finques/can-macia/allotjament/' + (i + 1) + '.webp');
 
   // Can Macià cerimònia
-  const _CM_CERIM = [
-    "0366atypicalwedding.webp","04atypicalwedding.webp","0525atypicalwedding.webp",
-    "06atypicalwedding.webp","10atypicalwedding.webp","14atypicalwedding.webp",
-    "can-macia-uauu-taranna-m6a3430.webp","can-macia-uauu-taranna-m6a3434.webp",
-    "dsc05388.webp","dsc05401.webp","pallares-03887.webp",
-  ].map(f => IMG + "can-macia/cerimonia/" + f);
+  const _CM_CERIM = Array.from({ length: 17 }, (_, i) => 'https://uauu.cat/media/finques/can-macia/cerimonia/' + (i + 1) + '.webp');
 
   // Can Macià galeria
-  const _CM_GAL = [
-    "009.webp","010.webp","0651atypicalwedding.webp",
-    "27-09-2024-oriol-marta-m6a7548.webp","342.webp","343.webp","348.webp",
-    "boda-ester-sergio-4.webp","can-macia-uauu-taranna-m6a3423.webp",
-  ].map(f => IMG + "can-macia/galeria-dimatges/" + f);
+  const _CM_GAL = Array.from({ length: 50 }, (_, i) => i + 1).filter(n => n !== 3).map(n => 'https://uauu.cat/media/finques/can-macia/galeria-dimatges/' + n + '.webp');
 
   // Castell de Tous cerimònia
-  const _CDT_CERIM = [
-    "mariemarryme-castell-de-tous-wed-days-42.webp","mariemarryme-castell-de-tous-wed-days-60.webp",
-    "0158atypicalwedding.webp","0476atypicalwedding.webp","0515atypicalwedding.webp",
-    "0606atypicalwedding.webp","atypicalwedding462.webp","miamoments-148.webp","miamoments-151.webp",
-  ].map(f => IMG + "castell-de-tous/cerimonia/" + f);
+  const _CDT_CERIM = Array.from({ length: 17 }, (_, i) => i + 1).filter(n => n !== 2).map(n => 'https://uauu.cat/media/finques/castell-de-tous/cerimonia/' + n + '.webp');
 
   // Castell de Tous galeria
-  const _CDT_GAL = [
-    "0447atypicalwedding.webp","0883atypicalwedding.webp","431atypicalwedding.webp",
-    "971atypicalwedding.webp","atypicalwedding209.webp","atypicalwedding345.webp",
-    "atypicalwedding353.webp","atypicalwedding917.webp","boda-mar-david-19.webp",
-    "boda-araceli-javi-castell-de-tous-674.webp","boda-mar-david-479.webp",
-    "boda-mar-david-483.webp","jc-488.webp","m-plq-1079.webp","miamoments-151.webp",
-  ].map(f => IMG + "castell-de-tous/galeria-dimatges/" + f);
+  const _CDT_GAL = Array.from({ length: 49 }, (_, i) => i + 1).filter(n => n !== 2).map(n => 'https://uauu.cat/media/finques/castell-de-tous/galeria-dimatges/' + n + '.webp');
 
   // Mas Vivencs cerimònia
-  const _MV_CERIM = [
-    "atypicalwedding003.webp","atypicalwedding011.webp","atypicalwedding019.webp",
-    "atypicalwedding113.webp","atypicalwedding141.webp",
-  ].map(f => IMG + "mas-vivencs/cerimonia/" + f);
+  const _MV_CERIM = Array.from({ length: 17 }, (_, i) => i + 1).filter(n => n !== 17).map(n => 'https://uauu.cat/media/finques/mas-vivencs/cerimonia/' + n + '.webp');
 
   // Mas Vivencs galeria
+  const _MV_GAL_BASE = 'https://uauu.cat/media/finques/mas-vivencs/galeria-dimatges/';
   const _MV_GAL = [
-    "2023-07-07-marina-albert-m6a7681.webp","21-09-2024-samuel-ariadna-m6a3570.webp",
-    "21-09-2024-samuel-ariadna-m6a4857.webp","boda-aurora-jose-luis-585.webp",
-    "boda-aurora-jose-luis-602.webp","boda-aurora-jose-luis-615.webp",
-    "boda-aurora-jose-luis-617.webp","boda-aurora-jose-luis-618.webp",
-    "boda-aurora-jose-luis-668.webp",
-  ].map(f => IMG + "mas-vivencs/galeria-dimatges/" + f);
+    ...Array.from({ length: 5 },  (_, i) => _MV_GAL_BASE + (i + 1) + '.webp'),
+    _MV_GAL_BASE + '5.1.webp',
+    ...Array.from({ length: 14 }, (_, i) => _MV_GAL_BASE + (i + 6) + '.webp'),
+    _MV_GAL_BASE + '20.1.webp',
+    ...Array.from({ length: 30 }, (_, i) => i + 21).filter(n => n !== 22 && n !== 35 && n !== 47).map(n => _MV_GAL_BASE + n + '.webp'),
+  ];
 
   // Mas Vivencs suite nupcial
   const _MV_SUITE = [
@@ -1149,7 +1102,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Possibilitat de celebrar cerimònia religiosa'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1190,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('can-macia'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar','Papereria (minutes, sitting plan, marca llocs)','Coordinació del casament'],
             price: null },
           { key:'preus', type:'preus',
@@ -1166,7 +1119,7 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'129,00€' },
             ], notes: preusNotes('can-macia') },
           { key:'dj', type:'standard',
-            img: IMG + 'can-macia/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1195,00€' },
           { key:'allotjament', type:'standard',
@@ -1184,7 +1137,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Paquet de pètals','Possibilitat de celebrar cerimònia religiosa'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1740,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('can-macia'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar'],
             price: null },
           { key:'preus', type:'preus',
@@ -1201,11 +1154,11 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'134,00€' },
             ], notes: preusNotes('can-macia') },
           { key:'quota', type:'standard',
-            img: IMG + 'can-macia/quota-de-serveis-essencials/coordinacio.webp',
+            img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
             price: '890,00€' },
           { key:'dj', type:'standard',
-            img: IMG + 'can-macia/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1250,00€' },
           { key:'allotjament', type:'standard',
@@ -1231,7 +1184,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Pack de pètals'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1690,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('ca-n-alzina'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar','Papereria (minutes, sitting plan, marca llocs)','Coordinació del casament'],
             price: null },
           { key:'preus', type:'preus',
@@ -1248,26 +1201,14 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'133,00€' },
             ], notes: preusNotes('can-alzina') },
           { key:'dj', type:'standard',
-            img: IMG + "ca-n-alzina/servei-de-dj/festa.webp",
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1195,00€' },
           { key:'allotjament', type:'standard',
             images: _CNA_ALLOT,
             features: ['Allotjament complert fins a 21 persones',"Inclou l'esmorzar de l'endemà",'Sortida a les 11:30h'],
             note: '*Obligatori en dissabtes de Maig a Octubre', price: '1290,00€' },
-          { key:'galeria', type:'galeria', images: [
-            IMG + "ca-n-alzina/galeria-dimatges/016-2-2.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/031.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/040-1.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/boda-laia-y-ana-16-de-772.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-g2a7673.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3108.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3137.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3153.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3168.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/espai-gastronomia-laura-chacon-34.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/jc-203.webp",
-          ]},
+          { key:'galeria', type:'galeria', images: _CNA_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
           { key:'cataleg',  type:'cataleg' },
@@ -1278,7 +1219,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Paquet de pètals'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1740,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('ca-n-alzina'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar'],
             price: null },
           { key:'preus', type:'preus',
@@ -1295,30 +1236,18 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'138,00€' },
             ], notes: preusNotes('can-alzina') },
           { key:'quota', type:'standard',
-            img: IMG + "ca-n-alzina/quota-de-serveis-essencials/coordinacio.webp",
+            img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
             price: '1490,00€' },
           { key:'dj', type:'standard',
-            img: IMG + "ca-n-alzina/servei-de-dj/festa.webp",
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1250,00€' },
           { key:'allotjament', type:'standard',
             images: _CNA_ALLOT,
             features: ['Allotjament complert fins a 21 persones',"Inclou l'esmorzar de l'endemà",'Sortida a les 11:30h'],
             note: '*Obligatori en dissabtes de Maig a Octubre', price: '1390,00€' },
-          { key:'galeria', type:'galeria', images: [
-            IMG + "ca-n-alzina/galeria-dimatges/016-2-2.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/031.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/040-1.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/boda-laia-y-ana-16-de-772.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-g2a7673.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3108.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3137.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3153.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/ca-n-alzina-uauu-taranna-m6a3168.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/espai-gastronomia-laura-chacon-34.webp",
-            IMG + "ca-n-alzina/galeria-dimatges/jc-203.webp",
-          ]},
+          { key:'galeria', type:'galeria', images: _CNA_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
           { key:'cataleg',  type:'cataleg' },
@@ -1337,7 +1266,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Pack de pètals'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1690,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('castell-de-tous'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar','Papereria (minutes, sitting plan, marca llocs)','Coordinació del casament'],
             price: null },
           { key:'preus', type:'preus',
@@ -1354,7 +1283,7 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'135,00€' },
             ], notes: preusNotes('castell-tous') },
           { key:'dj', type:'standard',
-            img: IMG + 'castell-de-tous/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1195,00€' },
           { key:'galeria', type:'galeria', images: _CDT_GAL },
@@ -1368,7 +1297,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Paquet de pètals'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1740,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('castell-de-tous'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar'],
             price: null },
           { key:'preus', type:'preus',
@@ -1385,11 +1314,11 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'140,00€' },
             ], notes: preusNotes('castell-tous') },
           { key:'quota', type:'standard',
-            img: IMG + 'castell-de-tous/quota-de-serveis-essencials/coordinacio.webp',
+            img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
             price: '1490,00€' },
           { key:'dj', type:'standard',
-            img: IMG + 'castell-de-tous/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1250,00€' },
           { key:'galeria', type:'galeria', images: _CDT_GAL },
@@ -1411,7 +1340,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1190,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('mas-vivencs'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar','Papereria (minutes, sitting plan, marca llocs)','Coordinació del casament'],
             price: null },
           { key:'preus', type:'preus',
@@ -1428,7 +1357,7 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'129,00€' },
             ], notes: preusNotes('mas-vivencs') },
           { key:'dj', type:'standard',
-            img: IMG + 'mas-vivencs/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1195,00€' },
           { key:'suite', type:'standard',
@@ -1446,7 +1375,7 @@
             features: ['Muntatge de cadires','Decoració floral','Música i DJ amb megafonia',"Habitació per canviar-se la núvia o nuvi",'Welcome drink','Arc floral','Paquet de pètals'],
             note: '*El preu de la cerimònia no inclou cerimoniant', price: '1740,00€' },
           { key:'menu', type:'standard',
-            images: gastImgs('mas-vivencs'),
+            images: gastImgs(),
             features: ["Aperitiu a escollir",'Barra de begudes','Plat principal','Pre postre','Pastís de noces','2 hores de barra lliure','Centres florals de taula','Menatge de taula a seleccionar'],
             price: null },
           { key:'preus', type:'preus',
@@ -1463,11 +1392,11 @@
               { date:"Tots els Dilluns – Dijous de l'any (excepte festius o vigílies de festiu)", day:'dll', min:35, price:'134,00€' },
             ], notes: preusNotes('mas-vivencs') },
           { key:'quota', type:'standard',
-            img: IMG + 'mas-vivencs/quota-de-serveis-essencials/coordinacio.webp',
+            img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
             price: '890,00€' },
           { key:'dj', type:'standard',
-            img: IMG + 'mas-vivencs/servei-de-dj/festa.webp',
+            img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
             note: '*No inclou taxes SGAE i AGEDI', price: '1250,00€' },
           { key:'allotjament', type:'standard',
