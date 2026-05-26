@@ -1509,7 +1509,8 @@
       const slide = document.createElement('div');
       slide.className = 'mob-car-slide';
       const img = document.createElement('img');
-      img.src = src; img.alt = ''; img.loading = i === 0 ? 'eager' : 'lazy';
+      img.alt = '';
+      if (i === 0) { img.src = src; } else { img.dataset.src = src; }
       slide.appendChild(img);
       track.appendChild(slide);
     });
@@ -1528,11 +1529,18 @@
       track.style.transform = `translateX(${x}px)`;
     }
 
+    function loadSlide(j) {
+      if (j < 0 || j >= imgs.length) return;
+      const img = track.children[j]?.querySelector('img[data-src]');
+      if (img) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+    }
+
     function goTo(idx) {
       cur = Math.max(0, Math.min(imgs.length - 1, idx));
       w = container.offsetWidth;
       snap(-cur * w, true);
       dotsEl.querySelectorAll('.mob-car-dot').forEach((d, i) => d.classList.toggle('is-active', i === cur));
+      loadSlide(cur - 1); loadSlide(cur); loadSlide(cur + 1);
     }
 
     track.addEventListener('touchstart', e => {
@@ -1570,6 +1578,7 @@
     next.onclick = () => goTo(cur + 1);
 
     snap(0, false);
+    loadSlide(1);
     container.appendChild(track);
     container.appendChild(prev);
     container.appendChild(next);
@@ -1713,13 +1722,22 @@
           const cell = document.createElement('div');
           cell.className = 'mob-card-gallery-item';
           const img = document.createElement('img');
-          img.src = src; img.alt = ''; img.loading = 'lazy';
+          img.dataset.src = src; img.alt = '';
           cell.appendChild(img);
           cell.onclick = () => openLightbox(item.images, i);
           strip.appendChild(cell);
         });
         card.appendChild(strip);
         wrap.appendChild(card);
+        const galObs = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting) {
+            strip.querySelectorAll('img[data-src]').forEach(img => {
+              img.src = img.dataset.src; img.removeAttribute('data-src');
+            });
+            galObs.disconnect();
+          }
+        }, { rootMargin: '300px' });
+        galObs.observe(card);
         return;
       }
 
