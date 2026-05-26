@@ -974,6 +974,10 @@
       .mob-card-reserva .mob-sel-cta { background: #221F1E; border-color: #221F1E; color: #fff; margin-top: 0; }
       .mob-card-reserva .mob-sel-cta:hover { background: #3a3532; border-color: #3a3532; }
       .mob-card-reserva .mob-sel-cta-arrow { background: #fff; }
+      .mob-card-cataleg { display: flex; align-items: center; justify-content: center; padding: 36px 24px; }
+      .mob-card-cataleg .mob-sel-cta { background: #221F1E; border-color: #221F1E; color: #fff; margin-top: 0; }
+      .mob-card-cataleg .mob-sel-cta:hover { background: #3a3532; border-color: #3a3532; }
+      .mob-card-cataleg .mob-sel-cta-arrow { background: #fff; }
 
       /* ── P5 item detail → bottom drawer ── */
       .p6-layout {

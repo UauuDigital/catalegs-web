@@ -842,6 +842,7 @@
     galeria:    { 'Català': "galeria d'imatges",          'Español': 'galería de imágenes',          'English': 'image gallery' },
     ubicacio:   { 'Català': 'ubicació',                   'Español': 'ubicación',                    'English': 'location' },
     reserva:    { 'Català': 'reservar visita presencial', 'Español': 'reservar visita presencial',   'English': 'book a visit' },
+    cataleg:    { 'Català': 'catàleg complert',           'Español': 'catálogo completo',             'English': 'full catalogue' },
   };
 
   // Standard item title (right panel) — multilingual
@@ -866,6 +867,33 @@
 
   // Maps button label
   const MAPS_BTN = { 'Català':'Com arribar-hi', 'Español':'Cómo llegar', 'English':'Getting there' };
+
+  // Catalogue PDF URLs per venue index, year and language
+  const CATALEG_URLS = {
+    0: { // Can Macià
+      '2026': { 'Català': 'https://drive.google.com/file/d/1LDVu9t_vv71nwCAautXGtXVKzAQQiPtc/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1omL_4k2vrKsvxsuZD7hTxD4pVNH1MT41/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1eJ5FV16dCFiKtSQQ_7mwBd5OEMTbBiAN/view?usp=drive_link' },
+      '2027': { 'Català': 'https://drive.google.com/file/d/1Wntl4PdsY60KAkj82vavVkig4Lpwwv-q/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1Vb_nRlh9_x9QHiQiGLSvBWyGQcy3swqI/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1uSnO6md3JorBFhSHOno6-lwYOUkL8npB/view?usp=drive_link' },
+    },
+    1: { // Ca n'Alzina
+      '2026': { 'Català': 'https://drive.google.com/file/d/1XU9TzOWgtJSHZK5oGNITwEvT7oImfgUg/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1rMNZCzk91L1ld-TRwann1QpRCaOaSgyy/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1k5cvBkbRwYTVPvreP5FyzLZdDM7W95Ir/view?usp=drive_link' },
+      '2027': { 'Català': 'https://drive.google.com/file/d/1Aq8k_LDGqwb1yxq8Mr6Np4_pSSK5MUqc/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1atYq851ZqJKA0wgrE29PyRUrc4Jf9ziF/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1Fw3A6rjn--YYkpuj4zJKW4H49WxU2DKf/view?usp=drive_link' },
+    },
+    2: { // Castell de Tous
+      '2026': { 'Català': 'https://drive.google.com/file/d/10W7PuAUqL75OnNNO6wzeThfYkrXkz7LH/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/10c7qHpVdysD9pCTnsgXEF9f2QyGDx15p/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1le5vZF1a9zgu57nfNhdIyeQPABw9wmLr/view?usp=drive_link' },
+      '2027': { 'Català': 'https://drive.google.com/file/d/1uy4In96kfkLItaBPI8hL92t5Aq5sdMJa/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1U8BvKgRAN_YiTlMaGYNOTiib1LD-GdTH/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1qRF5p48M5Uytyd3B-6AKB1rZDUJ0y_mY/view?usp=drive_link' },
+    },
+    3: { // Mas Vivencs
+      '2026': { 'Català': 'https://drive.google.com/file/d/1h8msU4C4BnK9s_6PzO0MAp1tVLpWqNvF/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1WYNaDLhNDWT5rz3vG3Xp7Lqvt1VSTxA6/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1lKau7JDcvNXazHSa_JyrKRQqam9ixg2C/view?usp=drive_link' },
+      '2027': { 'Català': 'https://drive.google.com/file/d/13LsdX1Y4ZekZ-nYdziZwM02IhmEWM8su/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1HxMjzSgSNvBOybxmwlMHABoOSfNB-82z/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1vkcaI4FFu9EA-6RhHw5Js9nT1-mrYxVw/view?usp=drive_link' },
+    },
+  };
+
+  function getCatalegUrl() {
+    const venueIdx = sel.venueIdx ?? 0;
+    const year = sel.year || '2027';
+    const lang = sel.language || 'Català';
+    return CATALEG_URLS[venueIdx]?.[year]?.[lang] || null;
+  }
 
   // Feature string translations (key = CA string)
   const FEAT_TRANS = {
@@ -1148,6 +1176,7 @@
           { key:'galeria', type:'galeria', images: _CM_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
         '2027': [
           { key:'cerimonia', type:'standard',
@@ -1186,6 +1215,7 @@
           { key:'galeria', type:'galeria', images: _CM_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
       },
     },
@@ -1240,6 +1270,7 @@
           ]},
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
         '2027': [
           { key:'cerimonia', type:'standard',
@@ -1290,6 +1321,7 @@
           ]},
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
       },
     },
@@ -1328,6 +1360,7 @@
           { key:'galeria', type:'galeria', images: _CDT_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
         '2027': [
           { key:'cerimonia', type:'standard',
@@ -1362,6 +1395,7 @@
           { key:'galeria', type:'galeria', images: _CDT_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
       },
     },
@@ -1404,6 +1438,7 @@
           { key:'galeria', type:'galeria', images: _MV_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
         '2027': [
           { key:'cerimonia', type:'standard',
@@ -1442,6 +1477,7 @@
           { key:'galeria', type:'galeria', images: _MV_GAL },
           { key:'ubicacio', type:'mapa' },
           { key:'reserva',  type:'reserva' },
+          { key:'cataleg',  type:'cataleg' },
         ],
       },
     },
@@ -1510,6 +1546,7 @@
       p5List, 'p5-item', items, lang,
       null,
       idx => {
+        if (items[idx].type === 'cataleg') { const u = getCatalegUrl(); if (u) window.open(u, '_blank'); return; }
         if (items[idx].type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
         sel.itemIdx = idx; navigate(5);
       }
@@ -1769,6 +1806,20 @@
         return;
       }
 
+      if (item.type === 'cataleg') {
+        const catalogUrl = getCatalegUrl();
+        if (!catalogUrl) return;
+        card.classList.add('mob-card-cataleg');
+        const btn = document.createElement('a');
+        btn.href = catalogUrl;
+        btn.target = '_blank'; btn.rel = 'noopener noreferrer';
+        btn.className = 'mob-sel-cta';
+        btn.innerHTML = `<span>${(ITEM_LABELS['cataleg']||{})[lang]||'Catàleg complert'}</span><span class="mob-sel-cta-arrow"></span>`;
+        card.appendChild(btn);
+        wrap.appendChild(card);
+        return;
+      }
+
       if (item.type === 'mapa') {
         card.innerHTML = '';
         const inner = document.createElement('div');
@@ -1989,6 +2040,7 @@
     // Left: same list, click changes item without page transition
     const listEl = document.getElementById('p6-list');
     buildItemList(listEl, 'p6-item', items, lang, null, idx => {
+      if (items[idx].type === 'cataleg') { const u = getCatalegUrl(); if (u) window.open(u, '_blank'); return; }
       if (items[idx].type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
       sel.itemIdx = idx;
       renderItemDetail(items[idx], vd);
@@ -2031,6 +2083,7 @@
       pill.className = 'p6-mob-pill' + (i === itemIdx ? ' is-active' : '');
       pill.textContent = (ITEM_LABELS[it.key] || {})[lang] || it.key;
       pill.onclick = () => {
+        if (it.type === 'cataleg') { const u = getCatalegUrl(); if (u) window.open(u, '_blank'); return; }
         if (it.type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
         sel.itemIdx = i;
         renderItemDetail(it, vd);
