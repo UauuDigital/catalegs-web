@@ -415,7 +415,7 @@
     arcAnim();
   }
 
-  const isMobile = () => window.innerWidth < 1024;
+  const isMobile = () => window.innerWidth <= 1024;
 
   function playArcHint() {
     if (isMobile()) return;
@@ -1059,7 +1059,7 @@
   const _CM_ALLOT = Array.from({ length: 18 }, (_, i) => 'https://uauu.cat/media/finques/can-macia/allotjament/' + (i + 1) + '.webp');
 
   // Can Macià cerimònia
-  const _CM_CERIM = Array.from({ length: 17 }, (_, i) => 'https://uauu.cat/media/finques/can-macia/cerimonia/' + (i + 1) + '.webp');
+  const _CM_CERIM = Array.from({ length: 17 }, (_, i) => i + 1).filter(n => n !== 2).map(n => 'https://uauu.cat/media/finques/can-macia/cerimonia/' + n + '.webp');
 
   // Can Macià galeria
   const _CM_GAL = Array.from({ length: 50 }, (_, i) => i + 1).filter(n => n !== 3).map(n => 'https://uauu.cat/media/finques/can-macia/galeria-dimatges/' + n + '.webp');
@@ -1848,7 +1848,7 @@
      LIGHTBOX
   ═══════════════════════════════════════════════════════ */
 
-  let _lb = null, _lbImgs = [], _lbIdx = 0;
+  let _lb = null, _lbImgs = [], _lbIdx = 0, _lbObs = null;
   let _carouselNav = null;
 
   document.addEventListener('keydown', e => {
@@ -1871,7 +1871,7 @@
         <button class="p6-lightbox-nav p6-lightbox-prev" id="lb-prev">
           <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <img class="p6-lightbox-img" id="lb-img" src="" alt="">
+        <div class="p6-lightbox-track" id="lb-track"></div>
         <button class="p6-lightbox-nav p6-lightbox-next" id="lb-next">
           <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -1881,7 +1881,6 @@
       _lb.querySelector('#lb-close').onclick = closeLightbox;
       _lb.querySelector('#lb-prev').onclick  = e => { e.stopPropagation(); lbGoTo(_lbIdx - 1); };
       _lb.querySelector('#lb-next').onclick  = e => { e.stopPropagation(); lbGoTo(_lbIdx + 1); };
-      _lb.onclick = e => { if (e.target === _lb) closeLightbox(); };
 
       document.addEventListener('keydown', e => {
         if (!_lb.classList.contains('open')) return;
@@ -1890,23 +1889,69 @@
         if (e.key === 'ArrowRight') lbGoTo(_lbIdx + 1);
       });
     }
+
     _lbImgs = images;
-    lbGoTo(startIdx);
+    if (_lbObs) { _lbObs.disconnect(); _lbObs = null; }
+
+    const track = _lb.querySelector('#lb-track');
+    track.innerHTML = '';
+
+    images.forEach((src, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'p6-lightbox-slide';
+      const img = document.createElement('img');
+      img.alt = '';
+      if (Math.abs(i - startIdx) <= 1) { img.src = src; } else { img.dataset.src = src; }
+      slide.appendChild(img);
+      track.appendChild(slide);
+    });
+
+    _lbObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const slides = [...track.children];
+        const idx = slides.indexOf(entry.target);
+        [-1, 0, 1, 2].forEach(offset => {
+          const s = slides[idx + offset];
+          if (!s) return;
+          const lazy = s.querySelector('img[data-src]');
+          if (lazy) { lazy.src = lazy.dataset.src; lazy.removeAttribute('data-src'); }
+        });
+      });
+    }, { root: track, threshold: 0 });
+    [...track.children].forEach(s => _lbObs.observe(s));
+
+    track.addEventListener('scroll', () => {
+      const idx = Math.round(track.scrollLeft / track.clientWidth);
+      if (idx === _lbIdx) return;
+      _lbIdx = idx;
+      _lb.querySelector('#lb-counter').textContent = `${idx + 1} / ${images.length}`;
+    }, { passive: true });
+
     _lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+      track.scrollTo({ left: startIdx * track.clientWidth, behavior: 'instant' });
+      _lbIdx = startIdx;
+      _lb.querySelector('#lb-counter').textContent = `${startIdx + 1} / ${images.length}`;
+      const hasMult = images.length > 1;
+      _lb.querySelector('#lb-prev').style.display = hasMult ? '' : 'none';
+      _lb.querySelector('#lb-next').style.display = hasMult ? '' : 'none';
+    });
   }
 
-  function closeLightbox() { _lb.classList.remove('open'); }
+  function closeLightbox() {
+    _lb.classList.remove('open');
+    document.body.style.overflow = '';
+    if (_lbObs) { _lbObs.disconnect(); _lbObs = null; }
+  }
 
   function lbGoTo(n) {
     _lbIdx = ((n % _lbImgs.length) + _lbImgs.length) % _lbImgs.length;
-    const img = _lb.querySelector('#lb-img');
-    img.classList.add('is-loading');
-    img.onload = () => img.classList.remove('is-loading');
-    img.src = _lbImgs[_lbIdx];
+    const track = _lb.querySelector('#lb-track');
+    track.scrollTo({ left: _lbIdx * track.clientWidth, behavior: 'smooth' });
     _lb.querySelector('#lb-counter').textContent = `${_lbIdx + 1} / ${_lbImgs.length}`;
-    const hasMult = _lbImgs.length > 1;
-    _lb.querySelector('#lb-prev').style.display = hasMult ? '' : 'none';
-    _lb.querySelector('#lb-next').style.display = hasMult ? '' : 'none';
   }
 
   /* ═══════════════════════════════════════════════════════
