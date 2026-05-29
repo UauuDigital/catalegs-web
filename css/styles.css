@@ -372,12 +372,29 @@
     }
     .p5-left.has-hover .p5-item           { opacity: 0.22; }
     .p5-left.has-hover .p5-item.is-active { opacity: 1; }
+    .p5-item { position: relative; }
+    .p5-mandatory-badge {
+      font-family: 'Inter', sans-serif; font-size: clamp(8px, 0.7vw, 11px);
+      font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 100px; padding: 3px 9px;
+      margin-left: 0.5em; vertical-align: middle;
+    }
     .p5-list-year {
       font-family: 'Inter', sans-serif;
       font-size: clamp(12px, 1vw, 15px);
       font-weight: 600; letter-spacing: -0.01em;
       color: rgba(255,255,255,0.45);
-      margin-bottom: 1.4em;
+      margin-bottom: 0.6em;
+      pointer-events: none;
+    }
+    .p5-venue-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: clamp(14px, 1.8vw, 28px);
+      letter-spacing: -0.03em; line-height: 1.1;
+      color: #fff;
+      margin-bottom: 1.2em;
       pointer-events: none;
     }
 
@@ -481,6 +498,13 @@
       font-weight: 600;
       color: #fff; line-height: 1.1; letter-spacing: -0.02em;
       margin-bottom: 0.5em;
+    }
+    .p6-mandatory-badge {
+      display: inline-block; width: fit-content; margin-bottom: 1.2em;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 100px; padding: 4px 11px;
     }
     .p6-features {
       list-style: none;
@@ -896,6 +920,13 @@
         display: flex; flex-direction: column; gap: 12px;
         width: 100%; padding: 76px 14px 40px;
       }
+      .p5-venue-title {
+        font-family: 'Ogg', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(22px, 6.4vw, 34px);
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5em;
+      }
       .mob-card {
         border-radius: 18px; overflow: hidden;
         background: #F2EFEE;
@@ -913,6 +944,13 @@
       .mob-card-features {
         list-style: none; font-family: 'Inter', sans-serif; font-size: 13px;
         font-weight: 300; color: rgba(34,31,30,0.65); line-height: 1.65;
+      }
+      .mob-card-mandatory {
+        display: inline-block; margin-top: 8px; margin-bottom: 8px;
+        font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: rgba(34,31,30,0.45); border: 1px solid rgba(34,31,30,0.2);
+        border-radius: 100px; padding: 3px 9px;
       }
       .mob-card-note {
         font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;

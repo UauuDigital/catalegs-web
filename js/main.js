@@ -819,6 +819,13 @@
     'Mas<br>Vivencs',
   ];
 
+  const VENUE_NAMES = [
+    'Can Macià',
+    "Ca n'Alzina",
+    'Castell de Tous',
+    'Mas Vivencs',
+  ];
+
   // Shared preu del menú footnote content per venue
   function preusNotes(finca) {
     const notes = {
@@ -848,7 +855,7 @@
   // Standard item title (right panel) — multilingual
   const ITEM_TITLES = {
     cerimonia:   { 'Català':'Cerimònia',                   'Español':'Ceremonia',                    'English':'Ceremony' },
-    menu:        { 'Català':'Menú',                        'Español':'Menú',                         'English':'Menu' },
+    menu:        { 'Català':'Què inclou el menú?',          'Español':'¿Qué incluye el menú?',        'English':"What's included?" },
     preus:       { 'Català':'Preu del menú',               'Español':'Precio del menú',              'English':'Menu pricing' },
     quota:       { 'Català':'Quota de serveis essencials', 'Español':'Cuota de servicios esenciales','English':'Essential services fee' },
     dj:          { 'Català':'Servei de DJ',                'Español':'Servicio de DJ',               'English':'DJ service' },
@@ -857,6 +864,31 @@
     galeria:     { 'Català':"Galeria d'imatges",           'Español':'Galería de imágenes',          'English':'Image gallery' },
     ubicacio:    { 'Català':'Com arribar-hi',              'Español':'Cómo llegar',                  'English':'Getting there' },
   };
+
+  const MANDATORY_KEYS = new Set(['quota', 'dj']);
+  const MANDATORY_LABEL = { 'Català': 'Imprescindible', 'Español': 'Imprescindible', 'English': 'Essential' };
+
+  const VENUE_INTRO = {
+    'Català': 'Descobreix la proposta de',
+    'Español': 'Descubre la propuesta de',
+    'English': 'Discover the proposal of',
+  };
+
+  const CERIMONIA_PREFIX = {
+    //                      Can Macià              Ca n'Alzina            Castell de Tous        Mas Vivencs
+    'Català':  ['La cerimònia de',  'La cerimònia de',  'La cerimònia del', 'La cerimònia de'],
+    'Español': ['La ceremonia de',  'La ceremonia de',  'La ceremonia del', 'La ceremonia de'],
+    'English': ['The ceremony at',  'The ceremony at',  'The ceremony at',  'The ceremony at'],
+  };
+
+  function itemTitle(item, lang) {
+    if (item.key === 'cerimonia') {
+      const prefixes = CERIMONIA_PREFIX[lang] || CERIMONIA_PREFIX['Català'];
+      const prefix = prefixes[sel.venueIdx ?? 0] ?? prefixes[0];
+      return `${prefix} ${VENUE_NAMES[sel.venueIdx ?? 0]}`;
+    }
+    return (ITEM_TITLES[item.key] || {})[lang] || (ITEM_TITLES[item.key] || {})['Català'] || item.key;
+  }
 
   // UI strings for preus panel
   const PREUS_UI = {
@@ -1420,7 +1452,11 @@
     const venueIdx = sel.venueIdx ?? 0;
     const year     = sel.year || '2027';
     const vd       = VENUE_DATA[venueIdx];
-    return vd.years[year] || vd.years['2027'] || vd.years['2026'] || [];
+    const items    = vd.years[year] || vd.years['2027'] || vd.years['2026'] || [];
+    const FIRST    = ['menu', 'preus', 'cerimonia'];
+    const head     = FIRST.map(k => items.find(i => i.key === k)).filter(Boolean);
+    const tail     = items.filter(i => !FIRST.includes(i.key));
+    return [...head, ...tail];
   }
 
   function buildItemList(containerEl, itemClass, items, lang, onHover, onClick) {
@@ -1488,6 +1524,10 @@
       p5Year.textContent = sel.year || '2027';
     }
     p5List.insertBefore(p5Year, p5List.firstChild);
+    const p5Title = document.createElement('div');
+    p5Title.className = 'p5-venue-title';
+    p5Title.textContent = `${VENUE_INTRO[lang] || VENUE_INTRO['Català']} ${VENUE_NAMES[venueIdx]}`;
+    p5List.insertBefore(p5Title, p5Year.nextSibling);
     buildMobCards();
   }
 
@@ -1608,7 +1648,7 @@
 
     const title = document.createElement('div');
     title.className = 'preus-int-title';
-    title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+    title.textContent = itemTitle(item, lang);
     container.appendChild(title);
 
     // Step 1 — month
@@ -1705,6 +1745,10 @@
       yearEl.textContent = sel.year || '2027';
     }
     wrap.appendChild(yearEl);
+    const mobTitle = document.createElement('div');
+    mobTitle.className = 'p5-venue-title';
+    mobTitle.textContent = `${VENUE_INTRO[lang] || VENUE_INTRO['Català']} ${VENUE_NAMES[sel.venueIdx ?? 0]}`;
+    wrap.appendChild(mobTitle);
 
     const tFeat = FEAT_TRANS[lang] || {};
     const tNote = NOTE_TRANS[lang] || {};
@@ -1809,8 +1853,14 @@
 
       const title = document.createElement('div');
       title.className = 'mob-card-title';
-      title.textContent = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+      title.textContent = itemTitle(item, lang);
       body.appendChild(title);
+      if (MANDATORY_KEYS.has(item.key)) {
+        const badge = document.createElement('div');
+        badge.className = 'mob-card-mandatory';
+        badge.textContent = MANDATORY_LABEL[lang] || 'Imprescindible';
+        body.appendChild(badge);
+      }
 
       if (item.features) {
         const ul = document.createElement('ul');
@@ -2147,7 +2197,7 @@
       const mapsUrl = coords ? `https://www.google.com/maps?q=${coords}` : 'https://www.google.com/maps';
       const btnLabel = MAPS_BTN[lang] || MAPS_BTN['Català'];
       rightEl.innerHTML = `
-        <div class="p6-title">${(ITEM_TITLES[item.key]||{})[lang]||(ITEM_TITLES[item.key]||{})['Català']||item.key}</div>
+        <div class="p6-title">${itemTitle(item, lang)}</div>
         <a class="p6-maps-btn" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">
           ${btnLabel}
           <span class="p6-maps-btn-arrow"></span>
@@ -2158,8 +2208,11 @@
 
     } else {
       // Standard item
-      const titleKey    = (ITEM_TITLES[item.key]||{})[lang] || (ITEM_TITLES[item.key]||{})['Català'] || item.key;
+      const titleKey    = itemTitle(item, lang);
       const titleHtml   = `<div class="p6-title">${titleKey}</div>`;
+      const badgeHtml   = MANDATORY_KEYS.has(item.key)
+        ? `<div class="p6-mandatory-badge">${MANDATORY_LABEL[lang] || 'Imprescindible'}</div>`
+        : '';
       const tFeat = FEAT_TRANS[lang] || {};
       const featuresHtml = item.features
         ? `<ul class="p6-features">${item.features.map(f => `<li>${tFeat[f] || f}</li>`).join('')}</ul>`
@@ -2170,7 +2223,7 @@
       const preusBtnHtml = item.key === 'menu'
         ? `<button class="p6-preus-link-btn">${(ITEM_TITLES['preus']||{})[lang]||(ITEM_TITLES['preus']||{})['Català']||'Preu del menú'}<span class="p6-preus-link-arrow"></span></button>`
         : '';
-      rightEl.innerHTML = titleHtml + featuresHtml + noteHtml + priceHtml + preusBtnHtml;
+      rightEl.innerHTML = titleHtml + badgeHtml + featuresHtml + noteHtml + priceHtml + preusBtnHtml;
       if (item.key === 'menu') {
         rightEl.querySelector('.p6-preus-link-btn').onclick = () => {
           const allItems = getVenueItems();
