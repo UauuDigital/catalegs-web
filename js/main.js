@@ -1348,7 +1348,7 @@
           { key:'quota', type:'standard',
             img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
-            price: '1490,00€' },
+            price: '1890,00€' },
           { key:'dj', type:'standard',
             img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
