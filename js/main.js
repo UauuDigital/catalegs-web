@@ -1664,7 +1664,7 @@
       btn.className = 'preus-int-month-btn'; btn.textContent = label; btn.dataset.month = i + 1;
       btn.onclick = () => {
         selMonth = selMonth === i + 1 ? null : i + 1;
-        selDay = null;
+        if (!selMonth) selDay = null;
         monthGrid.querySelectorAll('.preus-int-month-btn').forEach(b =>
           b.classList.toggle('is-active', +b.dataset.month === selMonth));
         daySection.classList.toggle('preus-int-step--visible', !!selMonth);
