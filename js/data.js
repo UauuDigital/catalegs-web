@@ -393,7 +393,7 @@
   const _CNA_BANQUET_EXT = Array.from({ length: 16 }, (_, i) => i + 1).filter(n => ![2, 3, 4, 7, 8, 10, 11].includes(n)).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/banquet_exterior/banquet_exterior_' + n + '.webp');
 
   // Ca n'Alzina galeria
-  const _CNA_GAL = Array.from({ length: 50 }, (_, i) => i + 1).filter(n => n !== 44).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/galeria-dimatges/' + n + '.webp');
+  const _CNA_GAL = Array.from({ length: 59 }, (_, i) => i + 1).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/galeria-dimatges/ca-n-alzina_' + n + '.webp');
 
   // Can Macià allotjament
   const _CM_ALLOT = Array.from({ length: 18 }, (_, i) => 'https://uauu.cat/media/finques/can-macia/allotjament/' + (i + 1) + '.webp');
