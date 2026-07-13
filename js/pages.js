@@ -871,8 +871,16 @@
       if (item.price) {
         const price = document.createElement('div');
         price.className = 'mob-card-price';
-        price.innerHTML = `${item.price}<span class="mob-card-price-iva">+IVA</span>`;
+        price.innerHTML = item.priceSub
+          ? item.price
+          : `${item.price}<span class="mob-card-price-iva">+IVA</span>`;
         body.appendChild(price);
+        if (item.priceSub) {
+          const priceSub = document.createElement('div');
+          priceSub.className = 'mob-card-price-sub';
+          priceSub.innerHTML = `${item.priceSub}<span class="mob-card-price-iva">+IVA</span>`;
+          body.appendChild(priceSub);
+        }
       }
       if (item.key === 'menu') {
         const preusLabel = (ITEM_TITLES['preus']||{})[lang] || 'Preu del menú';
@@ -1213,7 +1221,10 @@
         : '';
       const tNote = NOTE_TRANS[lang] || {};
       const noteHtml  = item.note ? `<div class="p6-note">${tNote[item.note] || item.note}</div>` : '';
-      const priceHtml = item.price ? `<div class="p6-price">${item.price}<span class="p6-price-iva">+IVA</span></div>` : '';
+      const priceSubHtml = item.priceSub ? `<div class="p6-price-sub">${item.priceSub}<span class="p6-price-iva">+IVA</span></div>` : '';
+      const priceHtml = item.price
+        ? `<div class="p6-price">${item.price}${item.priceSub ? '' : '<span class="p6-price-iva">+IVA</span>'}</div>${priceSubHtml}`
+        : '';
       const preusBtnHtml = item.key === 'menu'
         ? `<button class="p6-preus-link-btn">${(ITEM_TITLES['preus']||{})[lang]||(ITEM_TITLES['preus']||{})['Català']||'Preu del menú'}<span class="p6-preus-link-arrow"></span></button>`
         : '';

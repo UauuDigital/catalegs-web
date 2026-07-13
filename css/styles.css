@@ -527,6 +527,11 @@
       font-weight: 300; letter-spacing: 0.04em;
       color: rgba(255,255,255,0.45); vertical-align: middle; margin-left: 4px;
     }
+    .p6-price-sub {
+      font-family: 'Inter', sans-serif; font-size: clamp(11px, 0.9vw, 14px);
+      font-weight: 300; letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.45); text-align: right; margin-top: 4px;
+    }
     .td-iva {
       font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 300;
       color: rgba(34,31,30,0.35); letter-spacing: 0.04em; margin-left: 3px;
@@ -963,6 +968,10 @@
       .mob-card-price-iva {
         font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
         color: rgba(34,31,30,0.4); margin-left: 4px; vertical-align: middle;
+      }
+      .mob-card-price-sub {
+        font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300;
+        color: rgba(34,31,30,0.4); text-align: right; margin-top: 4px;
       }
       .mob-card .p6-preus-link-btn { display: none; }
       /* Carousel mòbil */

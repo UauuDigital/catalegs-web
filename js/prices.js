@@ -126,6 +126,55 @@
     }
   }
 
+  // ── Banquet a l'exterior (Ca n'Alzina): preu compost "X per convidat, mínim Y" ──
+  const _NOM_BANQUET_EXT = "Banquet a l'exterior";
+
+  function _aplicarBanquetExterior(csv) {
+    const lines = csv.replace(/^﻿/, '').trim().split(/\r?\n/);
+    if (lines.length < 2) return;
+
+    const hdrs  = _csvLine(lines[0]).map(h => h.trim().replace(/"/g, ''));
+    const iN    = hdrs.indexOf('Nom Servei');
+    const iM    = hdrs.indexOf('Masia');
+    const iA    = hdrs.indexOf('Any');
+    const iConv = hdrs.indexOf('Llindà preu X<0');
+    const iMin  = hdrs.indexOf('Llindà preu 0<X');
+
+    if ([iN, iM, iA, iConv, iMin].some(x => x === -1)) {
+      console.warn('[banquet-exterior] Capçaleres no trobades. S\'espera: Nom Servei, Masia, Any, Llindà preu X<0, Llindà preu 0<X');
+      console.warn('[banquet-exterior] Capçaleres rebudes:', JSON.stringify(hdrs));
+      return;
+    }
+
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      const cols = _csvLine(lines[i]);
+      const nom  = cols[iN]?.trim();
+      if (nom !== _NOM_BANQUET_EXT) continue;
+
+      // Nota: al full real, "Llindà preu 0<X" és el preu per convidat (valor petit, ex. 15€)
+      // i "Llindà preu X<0" és el mínim (valor gran, ex. 1.500€) — invers al que suggeria
+      // el nom de les columnes. Verificat contra dades reals de Ca n'Alzina 2026/2027.
+      const any         = String(cols[iA]?.trim());
+      const preuConvidat = _formatPreu(cols[iMin]?.trim());
+      const preuMinim    = _formatPreu(cols[iConv]?.trim());
+      if (!preuConvidat || !preuMinim) continue;
+
+      const masies = (cols[iM] || '').split(',').map(m => m.trim()).filter(Boolean);
+      for (const masia of masies) {
+        const idx = _PREUS_MASIA[masia];
+        if (idx === undefined) continue;
+        const items = VENUE_DATA[idx]?.years[any];
+        if (!items) continue;
+        const item = items.find(it => it.key === 'banquet_exterior');
+        if (item) {
+          item.price = `${preuConvidat} / convidat`;
+          item.priceSub = `Mínim ${preuMinim}`;
+        }
+      }
+    }
+  }
+
   // ── Pestanya PreusMenu: taula de preus per persona del menú ──
   function _aplicarPreusMenu(csv) {
     const lines = csv.replace(/^﻿/, '').trim().split(/\r?\n/);
@@ -183,7 +232,7 @@
   Promise.all([
     fetch(_PREUS_CSV)
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-      .then(_aplicarPreus)
+      .then(csv => { _aplicarPreus(csv); _aplicarBanquetExterior(csv); })
       .catch(err => console.warn('[preus] Error:', err)),
     fetch(_PREUS_MENU_CSV)
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })

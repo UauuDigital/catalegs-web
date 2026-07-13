@@ -149,6 +149,7 @@
     ubicacio:   { 'Català': 'ubicació',                   'Español': 'ubicación',                    'English': 'location' },
     reserva:    { 'Català': 'reservar visita presencial', 'Español': 'reservar visita presencial',   'English': 'book a visit' },
     cataleg:    { 'Català': 'catàleg complert',           'Español': 'catálogo completo',             'English': 'full catalogue' },
+    banquet_exterior: { 'Català': 'banquet exterior',     'Español': 'banquete exterior',            'English': 'outdoor banquet' },
   };
 
   // Standard item title (right panel) — multilingual
@@ -162,6 +163,7 @@
     suite:       { 'Català':'Allotjament',                 'Español':'Alojamiento',                  'English':'Accommodation' },
     galeria:     { 'Català':"Galeria d'imatges",           'Español':'Galería de imágenes',          'English':'Image gallery' },
     ubicacio:    { 'Català':'Com arribar-hi',              'Español':'Cómo llegar',                  'English':'Getting there' },
+    banquet_exterior: { 'Català':'Banquet exterior',       'Español':'Banquete exterior',            'English':'Outdoor banquet' },
   };
 
   const MANDATORY_KEYS  = new Set(['quota', 'dj']);
@@ -256,6 +258,8 @@
       'Sortida a les 11:30h':                                       'Salida a las 11:30h',
       'Allotjament per la parella':                                 'Alojamiento para la pareja',
       "Inclou l'esmorzar de l'endemà (sortida a les 11:30h)":       'Incluye el desayuno del día siguiente (salida a las 11:30h)',
+      "Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ.":
+        'Ca n\'Alzina ofrece la posibilidad de disfrutar del banquete exterior con unas vistas espectaculares al valle de Rubió. Incluye servicio de sonorización del DJ.',
     },
     'English': {
       'Muntatge de cadires':                                        'Chair setup',
@@ -293,6 +297,8 @@
       'Sortida a les 11:30h':                                       'Check-out at 11:30am',
       'Allotjament per la parella':                                 'Accommodation for the couple',
       "Inclou l'esmorzar de l'endemà (sortida a les 11:30h)":       'Includes breakfast the following morning (check-out at 11:30am)',
+      "Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ.":
+        "Ca n'Alzina offers the option to enjoy the outdoor banquet with spectacular views over the Rubió valley. Includes DJ sound system service.",
     },
   };
 
@@ -302,11 +308,13 @@
       '*El preu de la cerimònia no inclou cerimoniant':   '*El precio de la ceremonia no incluye oficiant',
       '*No inclou taxes SGAE i AGEDI':                    '*No incluye tasas SGAE y AGEDI',
       '*Obligatori en dissabtes de Maig a Octubre':       '*Obligatorio en sábados de Mayo a Octubre',
+      '*Capacitat màxima de 120 comensals':               '*Capacidad máxima de 120 comensales',
     },
     'English': {
       '*El preu de la cerimònia no inclou cerimoniant':   '*Ceremony price does not include an officiant',
       '*No inclou taxes SGAE i AGEDI':                    '*Does not include SGAE and AGEDI fees',
       '*Obligatori en dissabtes de Maig a Octubre':       '*Mandatory on Saturdays from May to October',
+      '*Capacitat màxima de 120 comensals':               '*Maximum capacity of 120 guests',
     },
   };
 
@@ -378,6 +386,9 @@
   const _CNA_CERIM = Array.from({ length: 13 }, (_, i) => 'https://uauu.cat/media/finques/ca-n-alzina/cerimonia/' + (i + 3) + '.webp');
 
   const _CNA_ALLOT = Array.from({ length: 13 }, (_, i) => 'https://uauu.cat/media/finques/ca-n-alzina/allotjament/' + (i + 1) + '.webp');
+
+  // Ca n'Alzina banquet exterior
+  const _CNA_BANQUET_EXT = Array.from({ length: 16 }, (_, i) => i + 1).filter(n => ![2, 3, 4, 7, 8, 10, 11].includes(n)).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/banquet_exterior/banquet_exterior_' + n + '.webp');
 
   // Ca n'Alzina galeria
   const _CNA_GAL = Array.from({ length: 50 }, (_, i) => i + 1).filter(n => n !== 44).map(n => 'https://uauu.cat/media/finques/ca-n-alzina/galeria-dimatges/' + n + '.webp');
@@ -508,6 +519,10 @@
           { key:'preus', type:'preus',
             img: IMG + "ca-n-alzina/gastronomia/pallares-01732.webp",
             rows: [], notes: preusNotes('can-alzina') },
+          { key:'banquet_exterior', type:'standard',
+            images: _CNA_BANQUET_EXT,
+            features: ["Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ."],
+            note: '*Capacitat màxima de 120 comensals', price: '15,00€ / convidat', priceSub: 'Mínim 1.500,00€' },
           { key:'dj', type:'standard',
             img: 'https://uauu.cat/media/general/dj/festa.webp',
             features: ["Música des de l'aperitiu fins al final de la festa","Reunió prèvia al casament per acordar tota la selecció musical","Servei de pantalla i projecció","Sopar del DJ"],
@@ -533,6 +548,10 @@
           { key:'preus', type:'preus',
             img: IMG + "ca-n-alzina/gastronomia/pallares-01732.webp",
             rows: [], notes: preusNotes('can-alzina') },
+          { key:'banquet_exterior', type:'standard',
+            images: _CNA_BANQUET_EXT,
+            features: ["Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ."],
+            note: '*Capacitat màxima de 120 comensals', price: '15,00€ / convidat', priceSub: 'Mínim 1.500,00€' },
           { key:'quota', type:'standard',
             img: 'https://uauu.cat/media/general/serveis-esencials/coordinacio.webp',
             features: ["Exclusivitat de l'espai durant el casament",'Coordinació del casament','Assistència al Pre Wedding Day pels nuvis','Menú de tast pels nuvis','Sitting Plan','Papereria (minutes i marca llocs)','Servei de neteja durant l\'esdeveniment'],
