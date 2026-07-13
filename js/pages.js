@@ -447,8 +447,20 @@
     items.forEach((item, i) => {
       const el = document.createElement('div');
       el.className   = itemClass;
-      el.textContent = (ITEM_LABELS[item.key] || {})[lang] || item.key;
       el.dataset.idx = i;
+
+      const label = (ITEM_LABELS[item.key] || {})[lang] || item.key;
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = label;
+      el.appendChild(labelSpan);
+
+      if (item.isNew) {
+        const badge = document.createElement('span');
+        badge.className = 'badge-new';
+        badge.textContent = NEW_LABEL[lang] || NEW_LABEL['Català'];
+        el.appendChild(badge);
+      }
+
       containerEl.appendChild(el);
     });
     let activeIdx = -1;
@@ -847,7 +859,15 @@
 
       const title = document.createElement('div');
       title.className = 'mob-card-title';
-      title.textContent = itemTitle(item, lang);
+      const titleText = document.createElement('span');
+      titleText.textContent = itemTitle(item, lang);
+      title.appendChild(titleText);
+      if (item.isNew) {
+        const newBadge = document.createElement('span');
+        newBadge.className = 'badge-new';
+        newBadge.textContent = NEW_LABEL[lang] || NEW_LABEL['Català'];
+        title.appendChild(newBadge);
+      }
       body.appendChild(title);
       if (MANDATORY_KEYS.has(item.key)) {
         const badge = document.createElement('div');
@@ -1211,7 +1231,8 @@
     } else {
       // Standard item
       const titleKey    = itemTitle(item, lang);
-      const titleHtml   = `<div class="p6-title">${titleKey}</div>`;
+      const newBadgeHtml = item.isNew ? `<span class="badge-new">${NEW_LABEL[lang] || NEW_LABEL['Català']}</span>` : '';
+      const titleHtml   = `<div class="p6-title">${titleKey}${newBadgeHtml}</div>`;
       const badgeHtml   = MANDATORY_KEYS.has(item.key)
         ? `<div class="p6-mandatory-badge">${MANDATORY_LABEL[lang] || 'Imprescindible'}</div>`
         : '';

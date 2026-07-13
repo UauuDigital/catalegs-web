@@ -380,6 +380,13 @@
       border-radius: 100px; padding: 3px 9px;
       margin-left: 0.5em; vertical-align: middle;
     }
+    .badge-new {
+      font-family: 'Inter', sans-serif; font-size: clamp(8px, 0.7vw, 10px);
+      font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 100px; padding: 3px 8px;
+      margin-left: 0.6em; vertical-align: middle; display: inline-block;
+    }
     .p5-list-year {
       font-family: 'Inter', sans-serif;
       font-size: clamp(12px, 1vw, 15px);

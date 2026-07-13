@@ -169,6 +169,8 @@
   const MANDATORY_KEYS  = new Set(['quota', 'dj']);
   const MANDATORY_LABEL = { 'Català': 'Imprescindible', 'Español': 'Imprescindible', 'English': 'Essential' };
 
+  const NEW_LABEL = { 'Català': 'NOU', 'Español': 'NUEVO', 'English': 'NEW' };
+
   const VENUE_INTRO = {
     'Català': 'Descobreix la proposta de',
     'Español': 'Descubre la propuesta de',
@@ -519,7 +521,7 @@
           { key:'preus', type:'preus',
             img: IMG + "ca-n-alzina/gastronomia/pallares-01732.webp",
             rows: [], notes: preusNotes('can-alzina') },
-          { key:'banquet_exterior', type:'standard',
+          { key:'banquet_exterior', type:'standard', isNew: true,
             images: _CNA_BANQUET_EXT,
             features: ["Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ."],
             note: '*Capacitat màxima de 120 comensals', price: '15,00€ / convidat', priceSub: 'Mínim 1.500,00€' },
@@ -548,7 +550,7 @@
           { key:'preus', type:'preus',
             img: IMG + "ca-n-alzina/gastronomia/pallares-01732.webp",
             rows: [], notes: preusNotes('can-alzina') },
-          { key:'banquet_exterior', type:'standard',
+          { key:'banquet_exterior', type:'standard', isNew: true,
             images: _CNA_BANQUET_EXT,
             features: ["Ca n'Alzina ofereix la possibilitat de gaudir del banquet exterior amb unes vistes espectaculars a la vall de Rubió. Inclou servei de sonorització del DJ."],
             note: '*Capacitat màxima de 120 comensals', price: '15,00€ / convidat', priceSub: 'Mínim 1.500,00€' },
