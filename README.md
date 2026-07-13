@@ -25,10 +25,11 @@ catalegs-web/
 │   └── styles.css          # Tot l'estil (~1100 línies); breakpoint a 1024px
 ├── js/
 │   ├── engine.js           # Motor de la wheel (física spring, touch/mouse, snap)
-│   ├── data.js             # Totes les dades hardcoded (preus, finques, traduccions)
+│   ├── data.js             # Dades base hardcoded (preus per defecte, finques, traduccions)
 │   ├── nav.js              # Estat de navegació (sel), header, menú, wheel setup
 │   ├── pages.js            # Renderers de pàgines P2–P5, carousel, lightbox
-│   └── analytics.js        # Seguiment Umami (events personalitzats)
+│   ├── analytics.js        # Seguiment Umami (events personalitzats)
+│   └── prices.js           # Sincronització en viu de preus des de Google Sheets (CSV)
 ├── fonts/
 │   ├── OGG MEDIUM/
 │   └── Inter-VariableFont_opsz,wght.ttf
@@ -51,6 +52,7 @@ Els scripts s'han de carregar en aquest ordre (tal com estan a `index.html`):
 | 3 | `nav.js` | `engine.js` (makeWheel) |
 | 4 | `pages.js` | `data.js`, `nav.js`, `engine.js` |
 | 5 | `analytics.js` | `nav.js` (navigate), `pages.js` (renderItemDetail) |
+| 6 | `prices.js` | `data.js` (muta `VENUE_DATA`), `nav.js`/`pages.js` (re-render si cal) |
 
 ---
 
@@ -62,16 +64,25 @@ No hi ha `package.json` ni eina de compilació. El desplegament és pujada direc
 |---|---|
 | Dev local | Obre `index.html` al navegador directament, o `python3 -m http.server` |
 | Desplegament | Pujada manual (FTP/SFTP) al servidor uauu.cat |
-| Cache bust | Incrementa `?v=N` a les 5 etiquetes `<script>` d'`index.html` |
+| Cache bust | Incrementa `?v=N` a les 6 etiquetes `<script>` d'`index.html` (inclòs `prices.js`) i al `<link>` de `styles.css` |
 | Preparar imatges | Executa `compress_to_webp.py` localment abans de pujar media al servidor |
 
 ---
 
 ## Com actualitzar dades
 
-Totes les dades estan hardcoded a **`js/data.js`**. No hi ha API ni fitxers CSV externs.
+Les dades viuen en dues capes:
 
-### Canviar preus o features d'una finca
+- **Capa base (hardcoded)**: `js/data.js` defineix `VENUE_DATA` — finques, anys, ítems, features i textos.
+- **Capa de sincronització en viu**: `js/prices.js` s'executa en carregar la pàgina i fa fetch a dues pestanyes d'un Google Sheet publicat com a CSV (pestanya principal: preus de Cerimònia/Quota/DJ/Allotjament; pestanya `PreusMenu`: taula de preus per persona). Parseja el CSV i **muta `VENUE_DATA` en memòria** després de la càrrega inicial. Si el fetch falla o les capçaleres del full no coincideixen, es limita a un `console.warn` i es manté el valor hardcoded de `data.js` com a fallback silenciós — no hi ha cap avís visible per a l'usuari.
+
+> ⚠️ **Consell de depuració**: si un preu mostrat no coincideix amb el que hi ha a `data.js`, comprova primer `js/prices.js` — pot estar sobreescrivint aquest valor des del Google Sheet. La font de veritat dels preus ja no és només el codi.
+
+### Canviar preus
+
+Edita el Google Sheet connectat a `js/prices.js` (`_PREUS_CSV` / `_PREUS_MENU_CSV`). Els valors de `VENUE_DATA` a `data.js` només s'apliquen com a fallback si el fetch falla.
+
+### Canviar features d'una finca
 
 Edita `VENUE_DATA` a `js/data.js`. Cada finca és un objecte indexat per any (`'2026'`, `'2027'`), amb un array d'ítems (cerimònia, menú, preus, dj, allotjament, galeria, ubicació, reserva, catàleg).
 
@@ -114,16 +125,23 @@ Tots els renderers de pàgines (`initPage2` a `initPage5`) i components reutilit
 ### `js/analytics.js`
 Wrapper d'Umami que enregistra events de navegació entre pàgines, visualitzacions d'ítems i clics als CTAs principals. Patcha `navigate()` i `renderItemDetail()` sense modificar la lògica original.
 
+### `js/prices.js`
+Sincronització en viu de preus: fa fetch en paral·lel a dues pestanyes d'un Google Sheet publicat com a CSV i muta `VENUE_DATA` en memòria (preus de Cerimònia/Quota/DJ/Allotjament i la taula de preus per persona del menú). Si el fetch falla, manté els valors hardcoded de `data.js` com a fallback silenciós (`console.warn`). Si l'usuari ja és a la pàgina 4 o 5, força un re-render perquè el preu actualitzat es vegi sense recarregar.
+
 ---
 
 ## Flux de dades
 
 ```
+En carregar la pàgina: prices.js fa fetch al Google Sheet (2 pestanyes, en paral·lel)
+                ↓
+    Èxit → muta VENUE_DATA en memòria   |   Error → console.warn, es manté data.js
+                ↓
 Usuari selecciona idioma → any → finca → ítem
                 ↓
          sel { language, year, venueIdx, itemIdx }
                 ↓
-    getVenueItems() llegeix VENUE_DATA[venueIdx].years[year]
+    getVenueItems() llegeix VENUE_DATA[venueIdx].years[year]   (ja patchejat si prices.js ha tingut èxit)
                 ↓
     renderItemDetail() llegeix FEAT_TRANS, NOTE_TRANS, etc.
                 ↓
@@ -148,6 +166,6 @@ Usuari selecciona idioma → any → finca → ítem
 
 - **Servidor**: uauu.cat
 - **Mètode**: pujada estàtica de fitxers (FTP/SFTP), sense CI/CD
-- **Cache busting**: paràmetre `?v=N` als 5 `<script>` i al `<link>` de CSS a `index.html`
+- **Cache busting**: paràmetre `?v=N` als 6 `<script>` (inclòs `prices.js`) i al `<link>` de CSS a `index.html`
 - **Media**: imatges i vídeos servits des de `https://uauu.cat/media/` (no inclòs al repo)
 - **Fonts i logos**: servits des del repo
