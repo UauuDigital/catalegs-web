@@ -1,7 +1,13 @@
 UAUU — CATÀLEG WEB · ESQUEMA DE PÀGINES
 ========================================
-Fitxer principal: index.html
-Última actualització: 2026-05-22
+Última actualització: 2026-06-15
+
+Fitxers JS (ordre de càrrega obligatori):
+  engine.js    → motor wheel (spring physics, touch/mouse/teclat)
+  data.js      → totes les dades hardcoded (VENUE_DATA, traduccions, imatges, PDFs)
+  nav.js       → estat (sel, curPage), navigate(), header, menú, isMobile()
+  pages.js     → renderers P2–P5, carousel, lightbox, taula preus interactiva
+  analytics.js → seguiment Umami (patcha navigate i renderItemDetail)
 
 
 ────────────────────────────────────────
