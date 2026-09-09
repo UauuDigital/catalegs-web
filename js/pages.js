@@ -512,11 +512,7 @@
     );
     const p5Year = document.createElement('div');
     p5Year.className = 'p5-list-year';
-    if (sel.year === '2028') {
-      p5Year.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
-    } else {
-      p5Year.textContent = sel.year || '2027';
-    }
+    p5Year.textContent = sel.year || '2027';
     p5List.insertBefore(p5Year, p5List.firstChild);
     const p5Title = document.createElement('div');
     p5Title.className = 'p5-venue-title';
@@ -745,11 +741,7 @@
     // Year label
     const yearEl = document.createElement('div');
     yearEl.className = 'p5-list-year';
-    if (sel.year === '2028') {
-      yearEl.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
-    } else {
-      yearEl.textContent = sel.year || '2027';
-    }
+    yearEl.textContent = sel.year || '2027';
     wrap.appendChild(yearEl);
     const mobTitle = document.createElement('div');
     mobTitle.className = 'p5-venue-title';
@@ -1116,11 +1108,7 @@
     // Year label at top of item list
     const yearLabel = document.createElement('div');
     yearLabel.className = 'p6-list-year';
-    if (sel.year === '2028') {
-      yearLabel.innerHTML = `${sel.year}<span class="list-year-notice">Preus orientatius 2027 · Oferta 2028 pendent de confirmar</span>`;
-    } else {
-      yearLabel.textContent = sel.year || '2027';
-    }
+    yearLabel.textContent = sel.year || '2027';
     listEl.insertBefore(yearLabel, listEl.firstChild);
 
     // Persist selection when mouse leaves

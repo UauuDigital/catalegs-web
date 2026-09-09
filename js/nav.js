@@ -127,7 +127,7 @@
   makeWheel(
     document.getElementById('track-1'),
     document.getElementById('list-1'),
-    ['2026', '2027'],
+    ['2026', '2027', '2028'],
     year => { sel.year = year; navigate(2); },
     1
   );
