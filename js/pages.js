@@ -9,6 +9,18 @@
     return CATALEG_URLS[venueIdx]?.[year]?.[lang] || null;
   }
 
+  // El catàleg queda bloquejat quan no hi ha PDF per a l'any/masia/idioma seleccionat (ara: 2028)
+  function isCatalegBloquejat(item) {
+    return item.type === 'cataleg' && !getCatalegUrl();
+  }
+
+  function buildBadgeNoDisponible(lang) {
+    const badge = document.createElement('span');
+    badge.className = 'badge-new';
+    badge.textContent = UNAVAILABLE_LABEL[lang] || UNAVAILABLE_LABEL['Català'];
+    return badge;
+  }
+
   function itemTitle(item, lang) {
     if (item.key === 'cerimonia') {
       const prefixes = CERIMONIA_PREFIX[lang] || CERIMONIA_PREFIX['Català'];
@@ -461,6 +473,12 @@
         el.appendChild(badge);
       }
 
+      if (isCatalegBloquejat(item)) {
+        el.classList.add('is-locked');
+        el.setAttribute('aria-disabled', 'true');
+        el.appendChild(buildBadgeNoDisponible(lang));
+      }
+
       containerEl.appendChild(el);
     });
     let activeIdx = -1;
@@ -797,13 +815,22 @@
 
       if (item.type === 'cataleg') {
         const catalogUrl = getCatalegUrl();
-        if (!catalogUrl) return;
         card.classList.add('mob-card-cataleg');
-        const btn = document.createElement('a');
-        btn.href = catalogUrl;
-        btn.target = '_blank'; btn.rel = 'noopener noreferrer';
-        btn.className = 'mob-sel-cta';
-        btn.innerHTML = `<span>${(ITEM_LABELS['cataleg']||{})[lang]||'Catàleg complert'}</span><span class="mob-sel-cta-arrow"></span>`;
+        const catLabel = (ITEM_LABELS['cataleg']||{})[lang]||'Catàleg complert';
+        let btn;
+        if (catalogUrl) {
+          btn = document.createElement('a');
+          btn.href = catalogUrl;
+          btn.target = '_blank'; btn.rel = 'noopener noreferrer';
+          btn.className = 'mob-sel-cta';
+          btn.innerHTML = `<span>${catLabel}</span><span class="mob-sel-cta-arrow"></span>`;
+        } else {
+          btn = document.createElement('span');
+          btn.className = 'mob-sel-cta is-locked';
+          btn.setAttribute('aria-disabled', 'true');
+          btn.innerHTML = `<span>${catLabel}</span>`;
+          btn.appendChild(buildBadgeNoDisponible(lang));
+        }
         card.appendChild(btn);
         wrap.appendChild(card);
         return;
@@ -1134,6 +1161,11 @@
       const pill = document.createElement('button');
       pill.className = 'p6-mob-pill' + (i === itemIdx ? ' is-active' : '');
       pill.textContent = (ITEM_LABELS[it.key] || {})[lang] || it.key;
+      if (isCatalegBloquejat(it)) {
+        pill.classList.add('is-locked');
+        pill.disabled = true;
+        pill.appendChild(buildBadgeNoDisponible(lang));
+      }
       pill.onclick = () => {
         if (it.type === 'cataleg') { const u = getCatalegUrl(); if (u) window.open(u, '_blank'); return; }
         if (it.type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }

@@ -170,6 +170,7 @@
   const MANDATORY_LABEL = { 'Català': 'Imprescindible', 'Español': 'Imprescindible', 'English': 'Essential' };
 
   const NEW_LABEL = { 'Català': 'NOU', 'Español': 'NUEVO', 'English': 'NEW' };
+  const UNAVAILABLE_LABEL = { 'Català': 'NO DISPONIBLE', 'Español': 'NO DISPONIBLE', 'English': 'NOT AVAILABLE' };
 
   const VENUE_INTRO = {
     'Català': 'Descobreix la proposta de',
