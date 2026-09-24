@@ -4,8 +4,8 @@
      Si el fetch falla, es mantenen els preus hardcoded de data.js.
   ═══════════════════════════════════════════════════════ */
 
-  const _PREUS_CSV      = 'https://docs.google.com/spreadsheets/d/1sDCJhzn-xYT26mY23dKkmuSakEgbPorwfabaUHf1tSg/export?format=csv&gid=0';
-  const _PREUS_MENU_CSV = 'https://docs.google.com/spreadsheets/d/1sDCJhzn-xYT26mY23dKkmuSakEgbPorwfabaUHf1tSg/export?format=csv&gid=1385757976';
+  const _PREUS_CSV      = 'https://docs.google.com/spreadsheets/d/1QHeig7QbKfKYbbRpEjxtV_ei7qY6wsXvuWH-cWYau68/export?format=csv&gid=0';
+  const _PREUS_MENU_CSV = 'https://docs.google.com/spreadsheets/d/1QHeig7QbKfKYbbRpEjxtV_ei7qY6wsXvuWH-cWYau68/export?format=csv&gid=1385757976';
 
   // Masia (columna) → índex de VENUE_DATA
   const _PREUS_MASIA = {

@@ -373,6 +373,13 @@
     .p5-left.has-hover .p5-item           { opacity: 0.22; }
     .p5-left.has-hover .p5-item.is-active { opacity: 1; }
     .p5-item { position: relative; }
+    /* Ítem bloquejat (catàleg no disponible): atenuat, cursor per defecte, amb pastilla "No disponible" */
+    .p5-item.is-locked, .p6-item.is-locked,
+    .p5-left.has-hover .p5-item.is-locked.is-active,
+    .p6-left.has-hover .p6-item.is-locked.is-active { opacity: 0.4; cursor: default; }
+    .mob-sel-cta.is-locked { opacity: 0.45; cursor: default; pointer-events: none; gap: 0; }
+    .mob-sel-cta.is-locked .badge-new { color: #fff; border-color: rgba(255,255,255,0.5); }
+    .p6-mob-pill.is-locked { opacity: 0.5; cursor: default; }
     .p5-mandatory-badge {
       font-family: 'Inter', sans-serif; font-size: clamp(8px, 0.7vw, 11px);
       font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
