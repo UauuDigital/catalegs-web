@@ -26,6 +26,7 @@
      ?lang=ca&any=2028&finca=mas-vivencs              → P4 (finca)
      ?lang=ca&any=2028&finca=mas-vivencs&seccio=menu  → P5 (detall) */
   const URL_LANGS  = { 'Català': 'ca', 'Español': 'es', 'English': 'en' };
+  // 2026 ja no surt al selector d'any, però continua accessible per URL (?any=2026)
   const URL_YEARS  = ['2026', '2027', '2028'];
   const URL_VENUES = ['can-macia', 'can-alzina', 'castell-de-tous', 'mas-vivencs'];
 
@@ -182,9 +183,8 @@
   makeWheel(
     document.getElementById('track-1'),
     document.getElementById('list-1'),
-    ['2026', '2027', '2028'],
-    year => { sel.year = year; navigate(2); },
-    1
+    ['2027', '2028'],
+    year => { sel.year = year; navigate(2); }
   );
 
   // Page 0 — Mobile combined form
@@ -203,7 +203,7 @@
     const mobLang = document.getElementById('mob-lang');
     const mobYear = document.getElementById('mob-year');
     if (sel.language) mobLang.value = sel.language;
-    if (sel.year)     mobYear.value = sel.year;
+    if (sel.year && mobYear.querySelector(`option[value="${sel.year}"]`)) mobYear.value = sel.year;
     updateMobStrings(mobLang.value);
   }
   document.getElementById('mob-lang').addEventListener('change', e => updateMobStrings(e.target.value));
