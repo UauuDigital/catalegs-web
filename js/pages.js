@@ -9,7 +9,7 @@
     return CATALEG_URLS[venueIdx]?.[year]?.[lang] || null;
   }
 
-  // El catàleg queda bloquejat quan no hi ha PDF per a l'any/masia/idioma seleccionat (ara: 2028)
+  // El catàleg queda bloquejat quan no hi ha PDF per a l'any/masia/idioma seleccionat
   function isCatalegBloquejat(item) {
     return item.type === 'cataleg' && !getCatalegUrl();
   }

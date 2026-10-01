@@ -204,18 +204,22 @@
     0: { // Can Macià
       '2026': { 'Català': 'https://drive.google.com/file/d/1LDVu9t_vv71nwCAautXGtXVKzAQQiPtc/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1omL_4k2vrKsvxsuZD7hTxD4pVNH1MT41/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1eJ5FV16dCFiKtSQQ_7mwBd5OEMTbBiAN/view?usp=drive_link' },
       '2027': { 'Català': 'https://drive.google.com/file/d/1Wntl4PdsY60KAkj82vavVkig4Lpwwv-q/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1Vb_nRlh9_x9QHiQiGLSvBWyGQcy3swqI/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1uSnO6md3JorBFhSHYOno6-lwYOUkL8npB/view?usp=drive_link' },
+      '2028': { 'Català': 'https://drive.google.com/file/d/1K8coYUrNf_jq_S3lp2AjobUbchI8M9bm/view?usp=sharing', 'Español': 'https://drive.google.com/file/d/1fIh0FNn9iZCtupb2GjrrR3k_IliNz76r/view?usp=sharing', 'English': 'https://drive.google.com/file/d/1YPjYq6Dn8Db1p1enOyx_vamwWX8kjeqW/view?usp=sharing' },
     },
     1: { // Ca n'Alzina
       '2026': { 'Català': 'https://drive.google.com/file/d/1XU9TzOWgtJSHZK5oGNITwEvT7oImfgUg/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1rMNZCzk91L1ld-TRwann1QpRCaOaSgyy/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1k5cvBkbRwYTVPvreP5FyzLZdDM7W95Ir/view?usp=drive_link' },
       '2027': { 'Català': 'https://drive.google.com/file/d/1Aq8k_LDGqwb1yxq8Mr6Np4_pSSK5MUqc/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1atYq851ZqJKA0wgrE29PyRUrc4Jf9ziF/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1Fw3A6rjn--YYkpuj4zJKW4H49WxU2DKf/view?usp=drive_link' },
+      '2028': { 'Català': 'https://drive.google.com/file/d/1ZdYdtOF1UXPD2WovCGDfWswatyNzGxhk/view?usp=sharing', 'Español': 'https://drive.google.com/file/d/1re1tE8Qw7moSQkk1dviwxtCvYAvWG3Zs/view?usp=sharing', 'English': 'https://drive.google.com/file/d/1arNRVvDwjXp8gziGblBHb1a7MXIs0kU2/view?usp=sharing' },
     },
     2: { // Castell de Tous
       '2026': { 'Català': 'https://drive.google.com/file/d/10W7PuAUqL75OnNNO6wzeThfYkrXkz7LH/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/10c7qHpVdysD9pCTnsgXEF9f2QyGDx15p/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1le5vZF1a9zgu57nfNhdIyeQPABw9wmLr/view?usp=drive_link' },
       '2027': { 'Català': 'https://drive.google.com/file/d/1uy4In96kfkLItaBPI8hL92t5Aq5sdMJa/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1U8BvKgRAN_YiTlMaGYNOTiib1LD-GdTH/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1qRF5p48M5Uytyd3B-6AKB1rZDUJ0y_mY/view?usp=drive_link' },
+      '2028': { 'Català': 'https://drive.google.com/file/d/1cgRsqvXX_r_wsnAGgHlrRheG_tTqiIyB/view?usp=sharing', 'Español': 'https://drive.google.com/file/d/1UI2U-voOuD9oAwkg2RgSbpbRlzGH7rNI/view?usp=sharing', 'English': 'https://drive.google.com/file/d/1vSgKDJd0dQmxeo29kCCAMdZa-hWAO1NK/view?usp=sharing' },
     },
     3: { // Mas Vivencs
       '2026': { 'Català': 'https://drive.google.com/file/d/1h8msU4C4BnK9s_6PzO0MAp1tVLpWqNvF/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1WYNaDLhNDWT5rz3vG3Xp7Lqvt1VSTxA6/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1lKau7JDcvNXazHSa_JyrKRQqam9ixg2C/view?usp=drive_link' },
       '2027': { 'Català': 'https://drive.google.com/file/d/13LsdX1Y4ZekZ-nYdziZwM02IhmEWM8su/view?usp=drive_link', 'Español': 'https://drive.google.com/file/d/1HxMjzSgSNvBOybxmwlMHABoOSfNB-82z/view?usp=drive_link', 'English': 'https://drive.google.com/file/d/1vkcaI4FFu9EA-6RhHw5Js9nT1-mrYxVw/view?usp=drive_link' },
+      '2028': { 'Català': 'https://drive.google.com/file/d/1Q4M830mSQvaBUUG_yYaptlwDm3foDIHL/view?usp=sharing', 'Español': 'https://drive.google.com/file/d/1KVExFYVIdX8vp3mvmF6EkEJ5YKl0IbLM/view?usp=sharing', 'English': 'https://drive.google.com/file/d/1tQidCvRN-cXrBBln-u7BoBSkX1Qsk2qd/view?usp=sharing' },
     },
   };
 
