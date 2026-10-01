@@ -19,13 +19,68 @@
   let curPage = 0;
   const sel   = {};   // { language, year, … }
 
+  /* ── URL compartible ──
+     ?lang=ca                                         → P1 (any)
+     ?lang=ca&any=2028                                → P2 (visió)
+     ?lang=ca&any=2028&pagina=espais                  → P3 (espais)
+     ?lang=ca&any=2028&finca=mas-vivencs              → P4 (finca)
+     ?lang=ca&any=2028&finca=mas-vivencs&seccio=menu  → P5 (detall) */
+  const URL_LANGS  = { 'Català': 'ca', 'Español': 'es', 'English': 'en' };
+  const URL_YEARS  = ['2026', '2027', '2028'];
+  const URL_VENUES = ['can-macia', 'can-alzina', 'castell-de-tous', 'mas-vivencs'];
+
+  function buildUrl(page) {
+    const q = [];
+    if (page >= 1 && URL_LANGS[sel.language]) q.push('lang=' + URL_LANGS[sel.language]);
+    if (page >= 2 && sel.year)                q.push('any=' + sel.year);
+    if (page === 3)                         q.push('pagina=espais');
+    if (page >= 4)                          q.push('finca=' + URL_VENUES[sel.venueIdx ?? 0]);
+    if (page === 5) {
+      const item = getVenueItems()[sel.itemIdx ?? 0];
+      if (item) q.push('seccio=' + item.key);
+    }
+    return location.pathname + (q.length ? '?' + q.join('&') : '') + location.hash;
+  }
+
+  // Actualitza la URL sense crear entrada nova a l'historial (canvis dins la mateixa pàgina)
+  function syncUrl() {
+    history.replaceState({ page: curPage, sel: { ...sel } }, '', buildUrl(curPage));
+  }
+
+  // Llegeix la URL, omple `sel` i retorna la pàgina; s'atura al darrer nivell vàlid
+  function applyUrl() {
+    Object.keys(sel).forEach(k => delete sel[k]);
+    const q = new URLSearchParams(location.search);
+    const language = Object.keys(URL_LANGS).find(l => URL_LANGS[l] === q.get('lang'));
+    if (!language) return 0;
+    sel.language = language;
+    if (!URL_YEARS.includes(q.get('any'))) return 1;
+    sel.year = q.get('any');
+    const venueIdx = URL_VENUES.indexOf(q.get('finca'));
+    if (venueIdx === -1) return q.get('pagina') === 'espais' ? 3 : 2;
+    sel.venueIdx = venueIdx;
+    sel.itemIdx  = 0;
+    const itemIdx = getVenueItems().findIndex(i =>
+      i.key === q.get('seccio') && i.type !== 'cataleg' && i.type !== 'reserva');
+    if (itemIdx === -1) return 4;
+    sel.itemIdx = itemIdx;
+    return 5;
+  }
+
   history.replaceState({ page: 0, sel: {} }, '');
 
   window.addEventListener('popstate', e => {
-    if (!e.state) return;
+    if (!e.state) { navigate(applyUrl(), { push: false }); return; }
     Object.keys(sel).forEach(k => delete sel[k]);
     Object.assign(sel, e.state.sel);
     navigate(e.state.page, { push: false });
+  });
+
+  // Enllaç directe: restaura l'estat de la URL un cop carregats tots els scripts (getVenueItems és a pages.js)
+  document.addEventListener('DOMContentLoaded', () => {
+    const page = applyUrl();
+    if (page > 0) navigate(page, { push: false });
+    syncUrl();
   });
 
   const header  = document.getElementById('siteHeader');
@@ -81,7 +136,7 @@
     if (to === 3) requestAnimationFrame(initPage3);
     if (to === 4) requestAnimationFrame(initPage4);
     if (to === 5) requestAnimationFrame(initPage5);
-    if (push) history.pushState({ page: to, sel: { ...sel } }, '');
+    if (push) history.pushState({ page: to, sel: { ...sel } }, '', buildUrl(to));
   }
 
   function rebuildNav() {

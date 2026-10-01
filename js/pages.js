@@ -1127,6 +1127,7 @@
       if (items[idx].type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
       sel.itemIdx = idx;
       renderItemDetail(items[idx], vd);
+      syncUrl();
       listEl.querySelectorAll('.p6-item').forEach((el, i) => {
         el.classList.toggle('is-active', i === idx);
       });
@@ -1171,6 +1172,7 @@
         if (it.type === 'reserva') { window.open('https://espaigastronomia.simplybook.it/v2/#book', '_blank'); return; }
         sel.itemIdx = i;
         renderItemDetail(it, vd);
+        syncUrl();
         mobNav.querySelectorAll('.p6-mob-pill').forEach((p, j) => p.classList.toggle('is-active', j === i));
         listEl.querySelectorAll('.p6-item').forEach((el, j) => el.classList.toggle('is-active', j === i));
         listEl.classList.add('has-hover');
@@ -1279,6 +1281,7 @@
           const mobNav = document.getElementById('p6-mob-nav');
           sel.itemIdx = preusIdx;
           renderItemDetail(allItems[preusIdx], vd);
+          syncUrl();
           listEl.querySelectorAll('.p6-item').forEach((el, i) => el.classList.toggle('is-active', i === preusIdx));
           listEl.classList.add('has-hover');
           mobNav.querySelectorAll('.p6-mob-pill').forEach((p, j) => p.classList.toggle('is-active', j === preusIdx));
